@@ -1,8 +1,19 @@
 lib: [
   "_build/install/default/lib/Covid_Simulator/META"
+  "_build/install/default/lib/Covid_Simulator/covid_simulator.a"
+  "_build/install/default/lib/Covid_Simulator/covid_simulator.cma"
+  "_build/install/default/lib/Covid_Simulator/covid_simulator.cmi"
+  "_build/install/default/lib/Covid_Simulator/covid_simulator.cmt"
+  "_build/install/default/lib/Covid_Simulator/covid_simulator.cmx"
+  "_build/install/default/lib/Covid_Simulator/covid_simulator.cmxa"
+  "_build/install/default/lib/Covid_Simulator/covid_simulator.ml"
+  "_build/install/default/lib/Covid_Simulator/covid_simulator__Gui.cmi"
+  "_build/install/default/lib/Covid_Simulator/covid_simulator__Gui.cmt"
+  "_build/install/default/lib/Covid_Simulator/covid_simulator__Gui.cmx"
   "_build/install/default/lib/Covid_Simulator/dune-package"
+  "_build/install/default/lib/Covid_Simulator/gui.ml"
   "_build/install/default/lib/Covid_Simulator/opam"
 ]
-bin: [
-  "_build/install/default/bin/Covid_Simulator"
+libexec: [
+  "_build/install/default/lib/Covid_Simulator/covid_simulator.cmxs"
 ]

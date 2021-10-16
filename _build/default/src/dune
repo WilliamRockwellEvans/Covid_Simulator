@@ -1,0 +1,4 @@
+(library
+ (name covid_simulator)
+ (public_name Covid_Simulator)
+ (libraries graphics yojson))

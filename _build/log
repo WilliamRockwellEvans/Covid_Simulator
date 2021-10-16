@@ -1,11 +1,10 @@
-# dune exec Covid_Simulator
+# dune build
 # OCAMLPARAM: unset
-# Workspace root:
-# /Users/williamrockwellevans/Desktop/CovidSimulator/Covid_Simulator
-$ /usr/bin/getconf _NPROCESSORS_ONLN > /var/folders/f7/bdx4lm0j3lb37p2b7bj7c9yh0000gn/T/dune8bc264.output 2> /dev/null
+# Workspace root: /Users/williamrockwellevans/Documents/GitHub/Covid_Simulator
+$ /usr/bin/getconf _NPROCESSORS_ONLN > /var/folders/f7/bdx4lm0j3lb37p2b7bj7c9yh0000gn/T/duneb22788.output 2> /dev/null
 # Auto-detected concurrency: 4
 # disable binary cache
-$ /Users/williamrockwellevans/.opam/cs3110-2021fa/bin/ocamlc.opt -config > /var/folders/f7/bdx4lm0j3lb37p2b7bj7c9yh0000gn/T/dunea5cff7.output
+$ /Users/williamrockwellevans/.opam/cs3110-2021fa/bin/ocamlc.opt -config > /var/folders/f7/bdx4lm0j3lb37p2b7bj7c9yh0000gn/T/dune9339ee.output
 # Dune context:
 #  { name = "default"
 #  ; kind = "default"
@@ -43,17 +42,17 @@ $ /Users/williamrockwellevans/.opam/cs3110-2021fa/bin/ocamlc.opt -config > /var/
 #        ; "DUNE_OCAML_STDLIB" :
 #            "/Users/williamrockwellevans/.opam/cs3110-2021fa/lib/ocaml"
 #        ; "DUNE_SOURCEROOT" :
-#            "/Users/williamrockwellevans/Desktop/CovidSimulator/Covid_Simulator"
+#            "/Users/williamrockwellevans/Documents/GitHub/Covid_Simulator"
 #        ; "INSIDE_DUNE" :
-#            "/Users/williamrockwellevans/Desktop/CovidSimulator/Covid_Simulator/_build/default"
+#            "/Users/williamrockwellevans/Documents/GitHub/Covid_Simulator/_build/default"
 #        ; "MANPATH" :
-#            "/Users/williamrockwellevans/Desktop/CovidSimulator/Covid_Simulator/_build/install/default/bin"
+#            "/Users/williamrockwellevans/Documents/GitHub/Covid_Simulator/_build/install/default/bin"
 #        ; "OCAMLFIND_IGNORE_DUPS_IN" :
-#            "/Users/williamrockwellevans/Desktop/CovidSimulator/Covid_Simulator/_build/install/default/lib"
+#            "/Users/williamrockwellevans/Documents/GitHub/Covid_Simulator/_build/install/default/lib"
 #        ; "OCAMLPATH" :
-#            "/Users/williamrockwellevans/Desktop/CovidSimulator/Covid_Simulator/_build/install/default/lib"
+#            "/Users/williamrockwellevans/Documents/GitHub/Covid_Simulator/_build/install/default/lib"
 #        ; "OCAMLTOP_INCLUDE_PATH" :
-#            "/Users/williamrockwellevans/Desktop/CovidSimulator/Covid_Simulator/_build/install/default/lib/toplevel"
+#            "/Users/williamrockwellevans/Documents/GitHub/Covid_Simulator/_build/install/default/lib/toplevel"
 #        ; "OCAML_COLOR" : "always"
 #        ; "OPAMCOLOR" : "always"
 #        }
@@ -131,5 +130,17 @@ $ /Users/williamrockwellevans/.opam/cs3110-2021fa/bin/ocamlc.opt -config > /var/
 #      ; windows_unicode = false
 #      }
 #  }
-# Workspace root:
-# /Users/williamrockwellevans/Desktop/CovidSimulator/Covid_Simulator
+$ (cd _build/default && /Users/williamrockwellevans/.opam/cs3110-2021fa/bin/ocamlc.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -w -49 -nopervasives -nostdlib -g -bin-annot -I src/.covid_simulator.objs/byte -no-alias-deps -opaque -o src/.covid_simulator.objs/byte/covid_simulator.cmo -c -impl src/covid_simulator.ml-gen)
+$ (cd _build/default && /Users/williamrockwellevans/.opam/cs3110-2021fa/bin/ocamldep.opt -modules -impl src/gui.ml) > _build/default/src/.covid_simulator.objs/gui.ml.d
+$ (cd _build/default && /Users/williamrockwellevans/.opam/cs3110-2021fa/bin/ocamlc.opt -w +a-4-6-7-9-27-29-30-32..42-44-45-48-50-60-66-67 -warn-error -a+31 -g -bin-annot -I src/.covid_simulator.objs/byte -I /Users/williamrockwellevans/.opam/cs3110-2021fa/lib/biniou -I /Users/williamrockwellevans/.opam/cs3110-2021fa/lib/easy-format -I /Users/williamrockwellevans/.opam/cs3110-2021fa/lib/graphics -I /Users/williamrockwellevans/.opam/cs3110-2021fa/lib/yojson -no-alias-deps -opaque -open Covid_simulator -o src/.covid_simulator.objs/byte/covid_simulator__Gui.cmo -c -impl src/gui.ml)
+$ (cd _build/default && /Users/williamrockwellevans/.opam/cs3110-2021fa/bin/ocamlc.opt -w +a-4-6-7-9-27-29-30-32..42-44-45-48-50-60-66-67 -warn-error -a+31 -g -a -o src/covid_simulator.cma src/.covid_simulator.objs/byte/covid_simulator.cmo src/.covid_simulator.objs/byte/covid_simulator__Gui.cmo)
+$ (cd _build/default && /Users/williamrockwellevans/.opam/cs3110-2021fa/bin/ocamlopt.opt -w @1..3@5..28@30..39@43@46..47@49..57@61..62-40 -strict-sequence -strict-formats -short-paths -keep-locs -w -49 -nopervasives -nostdlib -g -I src/.covid_simulator.objs/byte -I src/.covid_simulator.objs/native -intf-suffix .ml-gen -no-alias-deps -opaque -o src/.covid_simulator.objs/native/covid_simulator.cmx -c -impl src/covid_simulator.ml-gen)
+$ (cd _build/default && /Users/williamrockwellevans/.opam/cs3110-2021fa/bin/ocamlopt.opt -w +a-4-6-7-9-27-29-30-32..42-44-45-48-50-60-66-67 -warn-error -a+31 -g -I src/.covid_simulator.objs/byte -I src/.covid_simulator.objs/native -I /Users/williamrockwellevans/.opam/cs3110-2021fa/lib/biniou -I /Users/williamrockwellevans/.opam/cs3110-2021fa/lib/easy-format -I /Users/williamrockwellevans/.opam/cs3110-2021fa/lib/graphics -I /Users/williamrockwellevans/.opam/cs3110-2021fa/lib/yojson -intf-suffix .ml -no-alias-deps -opaque -open Covid_simulator -o src/.covid_simulator.objs/native/covid_simulator__Gui.cmx -c -impl src/gui.ml)
+$ (cd _build/default && /Users/williamrockwellevans/.opam/cs3110-2021fa/bin/ocamlopt.opt -w +a-4-6-7-9-27-29-30-32..42-44-45-48-50-60-66-67 -warn-error -a+31 -g -a -o src/covid_simulator.cmxa src/.covid_simulator.objs/native/covid_simulator.cmx src/.covid_simulator.objs/native/covid_simulator__Gui.cmx)
+$ (cd _build/default && /Users/williamrockwellevans/.opam/cs3110-2021fa/bin/ocamlc.opt -w +a-4-6-7-9-27-29-30-32..42-44-45-48-50-60-66-67 -warn-error -a+31 -g -bin-annot -I bin/.main.eobjs/byte -I /Users/williamrockwellevans/.opam/cs3110-2021fa/lib/biniou -I /Users/williamrockwellevans/.opam/cs3110-2021fa/lib/easy-format -I /Users/williamrockwellevans/.opam/cs3110-2021fa/lib/graphics -I /Users/williamrockwellevans/.opam/cs3110-2021fa/lib/yojson -I src/.covid_simulator.objs/byte -no-alias-deps -opaque -o bin/.main.eobjs/byte/dune__exe__Main.cmo -c -impl bin/main.ml)
+$ (cd _build/default && /Users/williamrockwellevans/.opam/cs3110-2021fa/bin/ocamlc.opt -w +a-4-6-7-9-27-29-30-32..42-44-45-48-50-60-66-67 -warn-error -a+31 -g -bin-annot -I test/.main.eobjs/byte -I /Users/williamrockwellevans/.opam/cs3110-2021fa/lib/biniou -I /Users/williamrockwellevans/.opam/cs3110-2021fa/lib/bytes -I /Users/williamrockwellevans/.opam/cs3110-2021fa/lib/easy-format -I /Users/williamrockwellevans/.opam/cs3110-2021fa/lib/graphics -I /Users/williamrockwellevans/.opam/cs3110-2021fa/lib/ounit2 -I /Users/williamrockwellevans/.opam/cs3110-2021fa/lib/ounit2/advanced -I /Users/williamrockwellevans/.opam/cs3110-2021fa/lib/stdlib-shims -I /Users/williamrockwellevans/.opam/cs3110-2021fa/lib/yojson -I src/.covid_simulator.objs/byte -no-alias-deps -opaque -o test/.main.eobjs/byte/dune__exe__Main.cmo -c -impl test/main.ml)
+$ (cd _build/default && /Users/williamrockwellevans/.opam/cs3110-2021fa/bin/ocamlopt.opt -w +a-4-6-7-9-27-29-30-32..42-44-45-48-50-60-66-67 -warn-error -a+31 -g -I bin/.main.eobjs/byte -I bin/.main.eobjs/native -I /Users/williamrockwellevans/.opam/cs3110-2021fa/lib/biniou -I /Users/williamrockwellevans/.opam/cs3110-2021fa/lib/easy-format -I /Users/williamrockwellevans/.opam/cs3110-2021fa/lib/graphics -I /Users/williamrockwellevans/.opam/cs3110-2021fa/lib/yojson -I src/.covid_simulator.objs/byte -I src/.covid_simulator.objs/native -intf-suffix .ml -no-alias-deps -opaque -o bin/.main.eobjs/native/dune__exe__Main.cmx -c -impl bin/main.ml)
+$ (cd _build/default && /Users/williamrockwellevans/.opam/cs3110-2021fa/bin/ocamlopt.opt -w +a-4-6-7-9-27-29-30-32..42-44-45-48-50-60-66-67 -warn-error -a+31 -g -I test/.main.eobjs/byte -I test/.main.eobjs/native -I /Users/williamrockwellevans/.opam/cs3110-2021fa/lib/biniou -I /Users/williamrockwellevans/.opam/cs3110-2021fa/lib/bytes -I /Users/williamrockwellevans/.opam/cs3110-2021fa/lib/easy-format -I /Users/williamrockwellevans/.opam/cs3110-2021fa/lib/graphics -I /Users/williamrockwellevans/.opam/cs3110-2021fa/lib/ounit2 -I /Users/williamrockwellevans/.opam/cs3110-2021fa/lib/ounit2/advanced -I /Users/williamrockwellevans/.opam/cs3110-2021fa/lib/stdlib-shims -I /Users/williamrockwellevans/.opam/cs3110-2021fa/lib/yojson -I src/.covid_simulator.objs/byte -I src/.covid_simulator.objs/native -intf-suffix .ml -no-alias-deps -opaque -o test/.main.eobjs/native/dune__exe__Main.cmx -c -impl test/main.ml)
+$ (cd _build/default && /Users/williamrockwellevans/.opam/cs3110-2021fa/bin/ocamlopt.opt -w +a-4-6-7-9-27-29-30-32..42-44-45-48-50-60-66-67 -warn-error -a+31 -g -shared -linkall -I src -o src/covid_simulator.cmxs src/covid_simulator.cmxa)
+$ (cd _build/default && /Users/williamrockwellevans/.opam/cs3110-2021fa/bin/ocamlopt.opt -w +a-4-6-7-9-27-29-30-32..42-44-45-48-50-60-66-67 -warn-error -a+31 -g -o bin/main.exe /Users/williamrockwellevans/.opam/cs3110-2021fa/lib/graphics/graphics.cmxa -I /Users/williamrockwellevans/.opam/cs3110-2021fa/lib/graphics /Users/williamrockwellevans/.opam/cs3110-2021fa/lib/easy-format/easy_format.cmxa /Users/williamrockwellevans/.opam/cs3110-2021fa/lib/biniou/biniou.cmxa /Users/williamrockwellevans/.opam/cs3110-2021fa/lib/yojson/yojson.cmxa src/covid_simulator.cmxa bin/.main.eobjs/native/dune__exe__Main.cmx)
+$ (cd _build/default && /Users/williamrockwellevans/.opam/cs3110-2021fa/bin/ocamlopt.opt -w +a-4-6-7-9-27-29-30-32..42-44-45-48-50-60-66-67 -warn-error -a+31 -g -o test/main.exe /Users/williamrockwellevans/.opam/cs3110-2021fa/lib/graphics/graphics.cmxa -I /Users/williamrockwellevans/.opam/cs3110-2021fa/lib/graphics /Users/williamrockwellevans/.opam/cs3110-2021fa/lib/easy-format/easy_format.cmxa /Users/williamrockwellevans/.opam/cs3110-2021fa/lib/biniou/biniou.cmxa /Users/williamrockwellevans/.opam/cs3110-2021fa/lib/yojson/yojson.cmxa src/covid_simulator.cmxa /Users/williamrockwellevans/.opam/cs3110-2021fa/lib/ocaml/unix.cmxa -I /Users/williamrockwellevans/.opam/cs3110-2021fa/lib/ocaml /Users/williamrockwellevans/.opam/cs3110-2021fa/lib/stdlib-shims/stdlib_shims.cmxa /Users/williamrockwellevans/.opam/cs3110-2021fa/lib/ounit2/advanced/oUnitAdvanced.cmxa /Users/williamrockwellevans/.opam/cs3110-2021fa/lib/ounit2/oUnit.cmxa test/.main.eobjs/native/dune__exe__Main.cmx)
