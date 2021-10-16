@@ -1,0 +1,8 @@
+lib: [
+  "_build/install/default/lib/Covid_Simulator/META"
+  "_build/install/default/lib/Covid_Simulator/dune-package"
+  "_build/install/default/lib/Covid_Simulator/opam"
+]
+bin: [
+  "_build/install/default/bin/Covid_Simulator"
+]

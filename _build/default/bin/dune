@@ -1,0 +1,4 @@
+(executable
+ (public_name Covid_Simulator)
+ (name main)
+ (libraries Covid_Simulator))
