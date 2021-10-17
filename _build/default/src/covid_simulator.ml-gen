@@ -1,0 +1,2 @@
+(** @canonical Covid_simulator.Gui *)
+module Gui = Covid_simulator__Gui

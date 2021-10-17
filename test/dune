@@ -1,0 +1,3 @@
+(executable
+ (name main)
+ (libraries Covid_Simulator ounit2))

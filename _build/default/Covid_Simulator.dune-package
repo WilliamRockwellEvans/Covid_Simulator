@@ -1,0 +1,23 @@
+(lang dune 2.9)
+(name Covid_Simulator)
+(library
+ (name Covid_Simulator)
+ (kind normal)
+ (archives (byte covid_simulator.cma) (native covid_simulator.cmxa))
+ (plugins (byte covid_simulator.cma) (native covid_simulator.cmxs))
+ (native_archives covid_simulator.a)
+ (requires graphics yojson)
+ (main_module_name Covid_simulator)
+ (modes byte native)
+ (modules
+  (wrapped
+   (main_module_name Covid_simulator)
+   (modules
+    ((name Gui) (obj_name covid_simulator__Gui) (visibility public) (impl)))
+   (alias_module
+    (name Covid_simulator)
+    (obj_name covid_simulator)
+    (visibility public)
+    (kind alias)
+    (impl))
+   (wrapped true))))
