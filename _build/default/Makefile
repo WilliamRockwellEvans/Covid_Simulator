@@ -3,6 +3,9 @@
 build:
 	dune build
 
+play:
+	OCAMLRUNPARAM=b dune exec bin/main.exe
+
 utop:
 	OCAMLRUNPARAM=b dune utop src
 

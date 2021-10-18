@@ -13,7 +13,17 @@
   (wrapped
    (main_module_name Covid_simulator)
    (modules
-    ((name Gui) (obj_name covid_simulator__Gui) (visibility public) (impl)))
+    ((name Gui) (obj_name covid_simulator__Gui) (visibility public) (impl))
+    ((name Network)
+     (obj_name covid_simulator__Network)
+     (visibility public)
+     (impl)
+     (intf))
+    ((name State)
+     (obj_name covid_simulator__State)
+     (visibility public)
+     (impl)
+     (intf)))
    (alias_module
     (name Covid_simulator)
     (obj_name covid_simulator)

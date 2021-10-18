@@ -16,7 +16,7 @@ let draw_rect x0 y0 w h =
   Graphics.lineto x1 y0; Graphics.lineto x0 y0;
   Graphics.moveto a b;;
 
-Graphics.open_graph "foo:0 200x300";;
+Graphics.open_graph " 200x300";;
 draw_rect 15 15 100 100;;
 
 let draw_poly r = 

@@ -1,2 +1,10 @@
 (** @canonical Covid_simulator.Gui *)
 module Gui = Covid_simulator__Gui
+
+
+(** @canonical Covid_simulator.Network *)
+module Network = Covid_simulator__Network
+
+
+(** @canonical Covid_simulator.State *)
+module State = Covid_simulator__State
