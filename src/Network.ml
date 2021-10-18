@@ -85,17 +85,13 @@ let neighbors net id =
   let p = List.assoc id net in
   p.neighbors |> List.map (fun x -> fst x)
 
-let get_position (net : t) id =
-  try
-    let p = List.assoc id net in
-    p.attributes.position
-  with Not_found -> raise (UnknownPerson id)
-
 let get_attributes net id =
   try
     let p = List.assoc id net in
     p.attributes
   with Not_found -> raise (UnknownPerson id)
+
+let get_position net id = (get_attributes net id).position
 
 let edge_info net id1 id2 =
   if List.mem_assoc id1 net then
