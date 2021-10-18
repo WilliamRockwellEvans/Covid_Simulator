@@ -1,10 +1,10 @@
-# dune build
+# dune exec bin/main.exe
 # OCAMLPARAM: unset
 # Workspace root: /home/rebelmerge/3110/Covid_Simulator
-$ /usr/bin/nproc > /tmp/dune31984d.output 2> /dev/null
+$ /usr/bin/nproc > /tmp/dune86919e.output 2> /dev/null
 # Auto-detected concurrency: 12
 # disable binary cache
-$ /home/rebelmerge/.opam/cs3110-2021fa/bin/ocamlc.opt -config > /tmp/dunef3ab90.output
+$ /home/rebelmerge/.opam/cs3110-2021fa/bin/ocamlc.opt -config > /tmp/dune0c9e80.output
 # Dune context:
 #  { name = "default"
 #  ; kind = "default"
@@ -116,11 +116,4 @@ $ /home/rebelmerge/.opam/cs3110-2021fa/bin/ocamlc.opt -config > /tmp/dunef3ab90.
 #      ; windows_unicode = false
 #      }
 #  }
-$ (cd _build/default && /home/rebelmerge/.opam/cs3110-2021fa/bin/ocamldep.opt -modules -impl src/state.ml) > _build/default/src/.covid_simulator.objs/state.ml.d
-$ (cd _build/default && /home/rebelmerge/.opam/cs3110-2021fa/bin/ocamlc.opt -w +a-4-6-7-9-27-29-30-32..42-44-45-48-50-60-66-67 -warn-error -a+31 -g -bin-annot -I src/.covid_simulator.objs/byte -I /home/rebelmerge/.opam/cs3110-2021fa/lib/biniou -I /home/rebelmerge/.opam/cs3110-2021fa/lib/easy-format -I /home/rebelmerge/.opam/cs3110-2021fa/lib/graphics -I /home/rebelmerge/.opam/cs3110-2021fa/lib/yojson -intf-suffix .ml -no-alias-deps -opaque -open Covid_simulator -o src/.covid_simulator.objs/byte/covid_simulator__State.cmo -c -impl src/state.ml)
-$ (cd _build/default && /home/rebelmerge/.opam/cs3110-2021fa/bin/ocamlc.opt -w +a-4-6-7-9-27-29-30-32..42-44-45-48-50-60-66-67 -warn-error -a+31 -g -a -o src/covid_simulator.cma src/.covid_simulator.objs/byte/covid_simulator.cmo src/.covid_simulator.objs/byte/covid_simulator__Network.cmo src/.covid_simulator.objs/byte/covid_simulator__State.cmo src/.covid_simulator.objs/byte/covid_simulator__Gui.cmo)
-$ (cd _build/default && /home/rebelmerge/.opam/cs3110-2021fa/bin/ocamlopt.opt -w +a-4-6-7-9-27-29-30-32..42-44-45-48-50-60-66-67 -warn-error -a+31 -g -I src/.covid_simulator.objs/byte -I src/.covid_simulator.objs/native -I /home/rebelmerge/.opam/cs3110-2021fa/lib/biniou -I /home/rebelmerge/.opam/cs3110-2021fa/lib/easy-format -I /home/rebelmerge/.opam/cs3110-2021fa/lib/graphics -I /home/rebelmerge/.opam/cs3110-2021fa/lib/yojson -intf-suffix .ml -no-alias-deps -opaque -open Covid_simulator -o src/.covid_simulator.objs/native/covid_simulator__State.cmx -c -impl src/state.ml)
-$ (cd _build/default && /home/rebelmerge/.opam/cs3110-2021fa/bin/ocamlopt.opt -w +a-4-6-7-9-27-29-30-32..42-44-45-48-50-60-66-67 -warn-error -a+31 -g -a -o src/covid_simulator.cmxa src/.covid_simulator.objs/native/covid_simulator.cmx src/.covid_simulator.objs/native/covid_simulator__Network.cmx src/.covid_simulator.objs/native/covid_simulator__State.cmx src/.covid_simulator.objs/native/covid_simulator__Gui.cmx)
-$ (cd _build/default && /home/rebelmerge/.opam/cs3110-2021fa/bin/ocamlopt.opt -w +a-4-6-7-9-27-29-30-32..42-44-45-48-50-60-66-67 -warn-error -a+31 -g -shared -linkall -I src -o src/covid_simulator.cmxs src/covid_simulator.cmxa)
-$ (cd _build/default && /home/rebelmerge/.opam/cs3110-2021fa/bin/ocamlopt.opt -w +a-4-6-7-9-27-29-30-32..42-44-45-48-50-60-66-67 -warn-error -a+31 -g -o bin/main.exe /home/rebelmerge/.opam/cs3110-2021fa/lib/graphics/graphics.cmxa -I /home/rebelmerge/.opam/cs3110-2021fa/lib/graphics /home/rebelmerge/.opam/cs3110-2021fa/lib/easy-format/easy_format.cmxa /home/rebelmerge/.opam/cs3110-2021fa/lib/biniou/biniou.cmxa /home/rebelmerge/.opam/cs3110-2021fa/lib/yojson/yojson.cmxa src/covid_simulator.cmxa bin/.main.eobjs/native/dune__exe__Main.cmx)
-$ (cd _build/default && /home/rebelmerge/.opam/cs3110-2021fa/bin/ocamlopt.opt -w +a-4-6-7-9-27-29-30-32..42-44-45-48-50-60-66-67 -warn-error -a+31 -g -o test/main.exe /home/rebelmerge/.opam/cs3110-2021fa/lib/graphics/graphics.cmxa -I /home/rebelmerge/.opam/cs3110-2021fa/lib/graphics /home/rebelmerge/.opam/cs3110-2021fa/lib/easy-format/easy_format.cmxa /home/rebelmerge/.opam/cs3110-2021fa/lib/biniou/biniou.cmxa /home/rebelmerge/.opam/cs3110-2021fa/lib/yojson/yojson.cmxa src/covid_simulator.cmxa /home/rebelmerge/.opam/cs3110-2021fa/lib/ocaml/unix.cmxa -I /home/rebelmerge/.opam/cs3110-2021fa/lib/ocaml /home/rebelmerge/.opam/cs3110-2021fa/lib/stdlib-shims/stdlib_shims.cmxa /home/rebelmerge/.opam/cs3110-2021fa/lib/ounit2/advanced/oUnitAdvanced.cmxa /home/rebelmerge/.opam/cs3110-2021fa/lib/ounit2/oUnit.cmxa test/.main.eobjs/native/dune__exe__Main.cmx)
+# Workspace root: /home/rebelmerge/3110/Covid_Simulator
