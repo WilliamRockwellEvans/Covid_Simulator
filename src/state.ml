@@ -73,7 +73,7 @@ let rec apply_changes state tracker changes =
   tracker#clear;
   failwith "Failure: Unimplemented"
 
-let update_state state = state
+let update_state (state : t) : t = state
 (* let the_tracker = new visitedTracker in Network.head state |>
    generate_updates state the_tracker |> apply_changes state
    the_tracker *)

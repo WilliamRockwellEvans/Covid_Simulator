@@ -1,9 +1,9 @@
 {
-  "person_ids": [
+  "people": [
     {
       "id": 1,
       "infected": "No",
-      "immunity": 0,
+      "immunity": 0.0,
       "mask": "Yes",
       "position": [
         1,
@@ -25,7 +25,7 @@
     {
       "id": 2,
       "infected": "Yes",
-      "immunity": 0,
+      "immunity": 0.0,
       "mask": "No",
       "position": [
         2,
@@ -42,7 +42,7 @@
     {
       "id": 3,
       "infected": "No",
-      "immunity": 0,
+      "immunity": 0.0,
       "mask": "No",
       "position": [
         3,

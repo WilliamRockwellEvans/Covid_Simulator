@@ -34,14 +34,21 @@ let pp_list pp_elt lst =
   in
   "[" ^ pp_elts lst ^ "]"
 
-(**[get_json_rep filepath] parses the json file at [filepath] into
+(**[get_net_rep filepath] parses the json file at [filepath] into
    Network.t*)
-let get_json_rep filepath = Yojson.Basic.from_file filepath |> from_json
+let get_net_rep filepath : Network.t =
+  Yojson.Basic.from_file filepath |> from_json
 
 (******************************************************************************
   End Helper Functions.
   Start test constructors.
  ******************************************************************************)
+let state_test
+    (name : string)
+    (state_in : State.t)
+    (expected_output : State.t) : test =
+  name >:: fun _ -> assert_equal expected_output (update_state state_in)
+(* ~printer *)
 
 (******************************************************************************
   End test constructors.
@@ -49,7 +56,18 @@ let get_json_rep filepath = Yojson.Basic.from_file filepath |> from_json
 
 let network_tests = []
 
-let state_tests = []
+let basic_before = get_net_rep "data/basic_network.json"
+
+let basic_after = get_net_rep "data/basic_network_stepped.json"
+
+let state_tests =
+  [
+    state_test
+      "basic_network.json stepped forward is \
+       basic_network_stepped.json, assuming infection prob is \
+       identically 1"
+      basic_before basic_after;
+  ]
 
 let suite =
   "test suit for Covid_Simulator"
