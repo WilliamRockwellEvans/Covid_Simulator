@@ -1,0 +1,60 @@
+{
+  "person_ids": [
+    {
+      "id": 1,
+      "infected": "Yes",
+      "immunity": 0,
+      "mask": "Yes",
+      "position": [
+        1,
+        2
+      ],
+      "edges": [
+        {
+          "person_id": 2,
+          "distance": 3.5,
+          "risk": "high"
+        },
+        {
+          "person_id": 3,
+          "distance": 2.0,
+          "risk": "low"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "infected": "Yes",
+      "immunity": 0,
+      "mask": "No",
+      "position": [
+        2,
+        4
+      ],
+      "edges": [
+        {
+          "person_id": 1,
+          "distance": 3.5,
+          "risk": "high:"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "infected": "No",
+      "immunity": 0,
+      "mask": "No",
+      "position": [
+        3,
+        2
+      ],
+      "edges": [
+        {
+          "person_id": 1,
+          "distance": 2.0,
+          "risk": "low"
+        }
+      ]
+    }
+  ]
+}
