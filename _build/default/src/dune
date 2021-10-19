@@ -1,4 +1,0 @@
-(library
- (name covid)
- (public_name Covid)
- (libraries graphics yojson))
