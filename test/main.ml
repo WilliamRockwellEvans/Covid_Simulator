@@ -1,5 +1,7 @@
 open OUnit2
+open Covid
 open Network
+open State
 
 (******************************************************************************
   Start Helper Functions.

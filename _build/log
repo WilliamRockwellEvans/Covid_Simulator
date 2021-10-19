@@ -1,10 +1,10 @@
-# dune exec bin/main.exe
+# dune test
 # OCAMLPARAM: unset
 # Workspace root: /home/rebelmerge/3110/Covid_Simulator
-$ /usr/bin/nproc > /tmp/dune86919e.output 2> /dev/null
+$ /usr/bin/nproc > /tmp/dune0f3341.output 2> /dev/null
 # Auto-detected concurrency: 12
 # disable binary cache
-$ /home/rebelmerge/.opam/cs3110-2021fa/bin/ocamlc.opt -config > /tmp/dune0c9e80.output
+$ /home/rebelmerge/.opam/cs3110-2021fa/bin/ocamlc.opt -config > /tmp/dunede4cfc.output
 # Dune context:
 #  { name = "default"
 #  ; kind = "default"
@@ -116,4 +116,3 @@ $ /home/rebelmerge/.opam/cs3110-2021fa/bin/ocamlc.opt -config > /tmp/dune0c9e80.
 #      ; windows_unicode = false
 #      }
 #  }
-# Workspace root: /home/rebelmerge/3110/Covid_Simulator

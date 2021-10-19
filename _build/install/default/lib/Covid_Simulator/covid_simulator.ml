@@ -1,1 +1,0 @@
-../../../../default/src/covid_simulator.ml-gen
