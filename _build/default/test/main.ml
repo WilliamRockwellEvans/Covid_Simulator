@@ -1,6 +1,7 @@
-open Yojson
 open OUnit2
+open Covid
 open Network
+open State
 
 (******************************************************************************
   Start Helper Functions.
@@ -41,16 +42,6 @@ let get_json_rep filepath = Yojson.Basic.from_file filepath |> from_json
   End Helper Functions.
   Start test constructors.
  ******************************************************************************)
-
-(** [start_room_test name adv expected_output] constructs an OUnit test
-    named [name] that asserts the equality of [expected_output] with
-    [start_room adv]. *)
-let start_room_test
-    (name : string)
-    (adv : int)
-    (expected_output : room_id) : test =
-  name >:: fun _ ->
-  assert_equal expected_output (start_room adv) ~printer:pp_string
 
 (******************************************************************************
   End test constructors.

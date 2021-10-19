@@ -1,6 +1,0 @@
-description = ""
-requires = "graphics yojson"
-archive(byte) = "covid_simulator.cma"
-archive(native) = "covid_simulator.cmxa"
-plugin(byte) = "covid_simulator.cma"
-plugin(native) = "covid_simulator.cmxs"
