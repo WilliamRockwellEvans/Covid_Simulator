@@ -70,7 +70,7 @@ val get_attributes : t -> person_id -> attr
 (** attributes net p] is the attributes of person [p] in network [net].
     Raises [UnknownPerson p] if person [p] does not exist in [net]*)
 
-val edge_info : t -> person_id -> person_id -> edge_info
+val edge_information : t -> person_id -> person_id -> edge_info
 (** [get_edge_info net p1 p2] is the edge information of the edge
     between person [p1] and person [p2]. Raised [UnknownPerson p1] if p1
     does not exist in [net]. Raises [UnknownEdge (p1,p2)] if an edge
