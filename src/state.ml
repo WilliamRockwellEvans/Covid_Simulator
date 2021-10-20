@@ -69,7 +69,6 @@ let generate_updates state tracker =
    [changes]*)
 let rec apply_changes state tracker changes = tracker#clear
 
-let update_state (state : t) : t = state
-(* let the_tracker = new visitedTracker in Network.head state |>
-   generate_updates state the_tracker |> apply_changes state
-   the_tracker *)
+let update_state state = state
+(* let the_tracker = new visitedTracker in generate_updates state
+   the_tracker |> apply_changes state tracker the_tracker *)
