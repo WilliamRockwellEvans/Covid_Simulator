@@ -81,8 +81,7 @@ let rec apply_changes (state : Network.t) changes =
         in
         iterate_people new_acc t
   in
-  iterate_people Network.empty_network []
+  iterate_people Network.empty_network (Network.list_people state)
 
-let update_state state = state
-(* let the_tracker = new visitedTracker in generate_updates state
-   the_tracker |> apply_changes state tracker the_tracker *)
+let update_state state =
+  generate_updates state (new visitedTracker) |> apply_changes state

@@ -57,6 +57,8 @@ val add_person : t -> person_id -> attr -> edge list -> t
     network, [person_id] is unique*)
 
 val get_person : t -> person_id -> person
+
+val list_people : t -> person_id list
 (*********************End bad*******************)
 
 exception UnknownPerson of person_id

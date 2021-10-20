@@ -104,6 +104,10 @@ let edge_info net id1 id2 =
 (*** Evil below ***)
 let empty_network : t = []
 
+let rec list_people = function
+  | [] -> []
+  | h :: t -> fst h :: list_people t
+
 let add_person net id attributes neighbors =
   (id, { attributes; neighbors }) :: net
 
