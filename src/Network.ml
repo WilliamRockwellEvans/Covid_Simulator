@@ -101,7 +101,7 @@ let edge_info net id1 id2 =
     with Not_found -> raise (UnknownEdge (id1, id2))
   else raise (UnknownPerson id1)
 
-(*** Shit below ***)
+(*** Evil below ***)
 let empty_network : t = []
 
 let add_person net id attributes neighbors =

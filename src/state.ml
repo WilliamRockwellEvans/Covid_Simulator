@@ -45,15 +45,14 @@ let process_node state (n : Network.person_id) =
   |> List.map rand_bool
   |> List.exists (fun x -> x)
 
-(* [generate_updates state tracker] is the list of people in state who
-   get infected*)
+(* [generate_updates state tracker] is a map of people in state who get
+   infected*)
 let generate_updates state tracker =
-  let rec generate_rec
-      (node : Network.person_id)
-      (inf_acc : Network.person_id list) =
+  let rec generate_rec (node : Network.person_id) inf_acc =
     tracker#add_visit node;
     let new_inf_acc =
-      if process_node state node then node :: inf_acc else inf_acc
+      if process_node state node then NodeMap.add node true inf_acc
+      else inf_acc
     in
     let rec lst_itr = function
       | [] -> []
@@ -63,11 +62,26 @@ let generate_updates state tracker =
     in
     lst_itr (Network.neighbors state node)
   in
-  generate_rec (Network.head state) []
+  generate_rec (Network.head state) NodeMap.empty
 
 (* [apply_changes state changes] parses through the graph and applies
    [changes]*)
-let rec apply_changes state tracker changes = tracker#clear
+let rec apply_changes (state : Network.t) changes =
+  let rec iterate_people net_acc = function
+    | [] -> net_acc
+    | h :: t ->
+        let pers = Network.get_person state h in
+        let new_acc =
+          if NodeMap.mem h changes then
+            Network.add_person net_acc h
+              { pers.attributes with infected = Infected }
+              pers.neighbors
+          else
+            Network.add_person net_acc h pers.attributes pers.neighbors
+        in
+        iterate_people new_acc t
+  in
+  iterate_people Network.empty_network []
 
 let update_state state = state
 (* let the_tracker = new visitedTracker in generate_updates state
