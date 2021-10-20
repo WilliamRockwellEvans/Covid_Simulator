@@ -58,7 +58,7 @@ val head : t -> person_id
 (**[head net] is the first person in the network (as specified in csv)*)
 
 val neighbors : t -> person_id -> person_id list
-(**[edges net p] is a set-like list of all the people who [p] has an
+(**[neighbors net p] is a set-like list of all the people who [p] has an
    interaction with in network [net]. Raises [UnknownPerson p] if the
    [p] is not a person in [net]*)
 

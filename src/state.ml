@@ -26,8 +26,6 @@ class visitedTracker =
     method clear = map <- NodeMap.empty
   end
 
-let not_yet_visited tracker n = not (tracker#was_visited n)
-
 (* [infection_prob node neighbor] is the likelihood of [node] being
    infected by [neighbor]*)
 let infection_prob (n : Network.person_id) neighbor = 1.
@@ -36,8 +34,8 @@ let infection_prob (n : Network.person_id) neighbor = 1.
    [prob] *)
 let rand_bool prob : bool = prob <= Random.float 1.
 
-(* [process_node state n] is whether node [n] in state [state] gets
-   infected by its neighbors *)
+(* [process_node state n] is if node [n] in state [state] gets infected
+   by its neighbors *)
 let process_node state (n : Network.person_id) =
   let rec lst_itr acc = function
     | h :: t -> lst_itr (infection_prob n h :: acc) t
@@ -47,31 +45,29 @@ let process_node state (n : Network.person_id) =
   |> List.map rand_bool
   |> List.exists (fun x -> x)
 
-let rec generate_tr acc state tracker n =
-  tracker#add_visit n;
-  let rec lst_itr unvisited_neighbors =
-    match unvisited_neighbors with
-    | [] -> acc
-    | h :: t -> generate_tr (h :: lst_itr t) state tracker h
+(* [generate_updates state tracker] is the list of people in state who
+   get infected*)
+let generate_updates state tracker =
+  let rec generate_rec
+      (node : Network.person_id)
+      (inf_acc : Network.person_id list) =
+    tracker#add_visit node;
+    let new_inf_acc =
+      if process_node state node then node :: inf_acc else inf_acc
+    in
+    let rec lst_itr = function
+      | [] -> []
+      | h :: t ->
+          if tracker#was_visited h then lst_itr t
+          else generate_rec h new_inf_acc
+    in
+    lst_itr (Network.neighbors state node)
   in
-  let processed_neighbors =
-    lst_itr
-      (Network.neighbors state n
-      |> List.filter (not_yet_visited tracker))
-  in
-  if process_node state n then n :: processed_neighbors
-  else processed_neighbors
-
-(* [generate_updates tracker n] is the list of updates to be applied to
-   the graph*)
-let rec generate_updates state tracker n =
-  generate_tr [] state tracker n
+  generate_rec (Network.head state) []
 
 (* [apply_changes state changes] parses through the graph and applies
    [changes]*)
-let rec apply_changes state tracker changes =
-  tracker#clear;
-  failwith "Failure: Unimplemented"
+let rec apply_changes state tracker changes = tracker#clear
 
 let update_state (state : t) : t = state
 (* let the_tracker = new visitedTracker in Network.head state |>
