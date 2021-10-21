@@ -4,6 +4,8 @@ type person_id = int
 
 type position = int list
 
+type line = position * position
+
 exception UnknownPerson of person_id
 
 exception UnknownEdge of person_id * person_id
@@ -16,6 +18,11 @@ exception InvalidJSON
 type infected =
   | Infected
   | Not_infected
+
+type graph = {
+  nodes : (position * infected) list;
+  edges : line list;
+}
 
 type edge_info = {
   distance : float;
@@ -81,6 +88,8 @@ let from_json j =
 let head (net : t) =
   match net with [] -> raise InvalidJSON | h :: t -> fst h
 
+let rec people = function [] -> [] | h :: t -> fst h :: people t
+
 let neighbors net id =
   try
     let p = List.assoc id net in
@@ -104,3 +113,27 @@ let edge_information net id1 id2 =
       if List.mem_assoc id2 net then raise (UnknownEdge (id1, id2))
       else raise (UnknownPerson id2)
   else raise (UnknownPerson id1)
+
+let create_graph net =
+  let idlist = people net in
+  let pi netw id =
+    ( get_position netw id,
+      let attr = get_attributes netw id in
+      attr.infected )
+  in
+  let pi' = pi net in
+  let ed netw2 id1 id2 =
+    (get_position netw2 id1, get_position netw2 id2)
+  in
+  let ed' = ed net in
+  let neighbors' = neighbors net in
+  let edges =
+    List.map
+      (fun id ->
+        let ed'' = ed' id in
+        neighbors' id |> List.map ed'')
+      idlist
+    |> List.flatten
+  in
+  let nlist = List.map pi' idlist in
+  { nodes = nlist; edges }
