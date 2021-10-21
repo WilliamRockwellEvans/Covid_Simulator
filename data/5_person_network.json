@@ -95,7 +95,7 @@
     },
     {
       "id": 5,
-      "infected": "no",
+      "infected": "No",
       "immunity": 0.4,
       "mask": "Yes",
       "position": [

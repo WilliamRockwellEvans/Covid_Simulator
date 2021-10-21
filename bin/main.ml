@@ -2,6 +2,7 @@ open Graphics
 open Covid
 open Network
 
+module Gui = struct 
 let from_rgb (c : Graphics.color) =
   let r = c / 65536 and g = c / 256 mod 256 and b = c mod 256 in
   (r, g, b)
@@ -100,21 +101,27 @@ let nodes_of_graph g = g.nodes
 
 let edges_of_graph g = g.edges
 
-let stepped_graph = "basic_network_stepped.json" |> graph_of_json
-
-let ppl = stepped_graph |> nodes_of_graph |> List.map person_of_graph
-
-let edges = stepped_graph |> edges_of_graph |> List.map edge_of_graph
-
-let write_title () =
-  let a, b = Graphics.current_point () in
-  let x_tot = Graphics.size_x () in
-  let y_tot = Graphics.size_y () in
-  let title = "Covid Network" in
-  Graphics.moveto (x_tot / 2) (8 * y_tot / 9);
+let write_title () = 
+  let (a,b) = Graphics.current_point () in
+  let x_tot = Graphics.size_x () in 
+  let y_tot = Graphics.size_y () in 
+  let title = "Covid Network" in 
+  Graphics.moveto (x_tot/2) (8*y_tot/9);
   Graphics.draw_string title;
   Graphics.moveto a b
 
-let () = Graphics.open_graph " 700x700";;
+end 
 
-write_title ()
+let stepped_graph = "basic_network_stepped.json" |> Gui.graph_of_json 
+
+let ppl = stepped_graph |> Gui.nodes_of_graph |> List.map Gui.person_of_graph
+
+let edges = stepped_graph |> Gui.edges_of_graph |> List.map Gui.edge_of_graph ;;
+
+
+
+
+let () = Graphics.open_graph " 700x700";;
+Gui.get_person_net ppl edges;
+Gui.write_title ();
+
