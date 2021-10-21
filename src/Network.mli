@@ -91,6 +91,7 @@ val get_person : t -> person_id -> person
 
 (*********************End bad*******************)
 
+
 val neighbors : t -> person_id -> person_id list
 (**[neighbors net p] is a set-like list of all the people who [p] has an
    interaction with in network [net]. Raises [UnknownPerson p] if the
