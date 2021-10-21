@@ -1,5 +1,15 @@
-open zip file 
-opam install graphics
-opam install Yojson
-rune dune build 
-run make play 
+Download the Zip file and move it into your the directory of your choice.
+For Linux and Mac: Just move the ZIP file into your the directory of your 
+choice through whatever means you normally would use.
+For Windows, navigate to \\wsl$ and copy the source zip into 
+home/<your-wsl-username>.
+
+In your terminal run the following commands:
+  opam install graphics
+  opam install Yojson
+
+Still in terminal, in the directory where the zip file has been unzipped, 
+run the following commands:
+  run dune build 
+  run make play 
+
