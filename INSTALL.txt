@@ -1,0 +1,5 @@
+open zip file 
+opam install graphics
+opam install Yojson
+rune dune build 
+run make play 
