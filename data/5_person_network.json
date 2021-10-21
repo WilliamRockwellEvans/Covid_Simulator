@@ -1,0 +1,114 @@
+{
+  "people": [
+    {
+      "id": 1,
+      "infected": "Yes",
+      "immunity": 0.0,
+      "mask": "Yes",
+      "position": [
+        1,
+        2
+      ],
+      "edges": [
+        {
+          "person_id": 2,
+          "distance": 3.5,
+          "risk": "high"
+        },
+        {
+          "person_id": 3,
+          "distance": 2.0,
+          "risk": "low"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "infected": "Yes",
+      "immunity": 0.0,
+      "mask": "No",
+      "position": [
+        2,
+        4
+      ],
+      "edges": [
+        {
+          "person_id": 1,
+          "distance": 3.5,
+          "risk": "high"
+        },
+        {
+          "person_id": 4,
+          "distance": 3.0,
+          "risk": "low"
+        },
+        {
+          "person_id": 5,
+          "distance": 0.5,
+          "risk": "low"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "infected": "No",
+      "immunity": 0.0,
+      "mask": "No",
+      "position": [
+        3,
+        2
+      ],
+      "edges": [
+        {
+          "person_id": 1,
+          "distance": 2.0,
+          "risk": "low"
+        },
+        {
+          "person_id": 4,
+          "distance": 2.0,
+          "risk": "high"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "infected": "Yes",
+      "immunity": 0.5,
+      "mask": "No",
+      "position": [
+        5,
+        1
+      ],
+      "edges": [
+        {
+          "person_id": 2,
+          "distance": 3.0,
+          "risk": "low"
+        },
+        {
+          "person_id": 2,
+          "distance": 2.0,
+          "risk": "high"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "infected": "no",
+      "immunity": 0.4,
+      "mask": "Yes",
+      "position": [
+        2,
+        6
+      ],
+      "edges": [
+        {
+          "person_id": 2,
+          "distance": 0.5,
+          "risk": "low"
+        }
+      ]
+    }
+  ]
+}
