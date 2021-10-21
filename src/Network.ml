@@ -104,15 +104,3 @@ let edge_information net id1 id2 =
       if List.mem_assoc id2 net then raise (UnknownEdge (id1, id2))
       else raise (UnknownPerson id2)
   else raise (UnknownPerson id1)
-
-(*** Evil below ***)
-let empty_network : t = []
-
-let rec list_people = function
-  | [] -> []
-  | h :: t -> fst h :: list_people t
-
-let add_person net id attributes neighbors =
-  (id, { attributes; neighbors }) :: net
-
-let get_person net id = List.assoc id net

@@ -38,29 +38,6 @@ type attr = {
 }
 (** The type of individual attributes of person [id]*)
 
-(*********************This is bad************************)
-type edge = person_id * edge_info
-
-type person = {
-  attributes : attr;
-  neighbors : edge list;
-}
-(** The type of people*)
-
-val empty_network : t
-(** [empty_network] represents an empty_network*)
-
-val add_person : t -> person_id -> attr -> edge list -> t
-(** [add_person net id attributes neighbors] is the network formed by
-    adding the person [id] with [attributes] and [neighbors] to [net].
-    Requires: neighbors is a valid list of person_ids, [net] is a valid
-    network, [person_id] is unique*)
-
-val get_person : t -> person_id -> person
-
-val list_people : t -> person_id list
-(*********************End bad*******************)
-
 exception UnknownPerson of person_id
 (** Raised when [person_id] is not in the network*)
 
@@ -90,9 +67,8 @@ val get_position : t -> person_id -> position
     Raises [UnknownPerson p] if person [p] does not exist in [net]*)
 
 val get_attributes : t -> person_id -> attr
-(** [get_attributes net p] is the attributes of person [p] in network
-    [net]. Raises [UnknownPerson p] if person [p] does not exist in
-    [net]*)
+(** attributes net p] is the attributes of person [p] in network [net].
+    Raises [UnknownPerson p] if person [p] does not exist in [net]*)
 
 val edge_information : t -> person_id -> person_id -> edge_info
 (** [get_edge_info net p1 p2] is the edge information of the edge
