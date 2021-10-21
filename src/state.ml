@@ -55,10 +55,18 @@ let generate_updates state tracker =
       else inf_acc
     in
     let rec lst_itr = function
-      | [] -> []
+      | [] -> NodeMap.empty
       | h :: t ->
           if tracker#was_visited h then lst_itr t
-          else generate_rec h new_inf_acc
+          else
+            NodeMap.merge
+              (fun h o1 o2 ->
+                match (o1, o2) with
+                | None, None -> None
+                | None, Some v | Some v, None -> Some v
+                | _, _ -> failwith "Invalid arg: maps aren't disjoint")
+              inf_acc
+              (generate_rec h new_inf_acc)
     in
     lst_itr (Network.neighbors state node)
   in
