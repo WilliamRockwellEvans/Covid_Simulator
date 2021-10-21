@@ -100,3 +100,15 @@ let edge_info net id1 id2 =
       p.neighbors |> List.assoc id2
     with Not_found -> raise (UnknownEdge (id1, id2))
   else raise (UnknownPerson id1)
+
+(*** Evil below ***)
+let empty_network : t = []
+
+let rec list_people = function
+  | [] -> []
+  | h :: t -> fst h :: list_people t
+
+let add_person net id attributes neighbors =
+  (id, { attributes; neighbors }) :: net
+
+let get_person net id = List.assoc id net
