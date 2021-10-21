@@ -89,7 +89,7 @@ let rec apply_changes (state : Network.t) changes =
         in
         iterate_people new_acc t
   in
-  iterate_people Network.empty_network (Network.list_people state)
+  iterate_people Network.empty_network (Network.people state)
 
 let update_state state =
   generate_updates state (new visitedTracker) |> apply_changes state
