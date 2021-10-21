@@ -90,6 +90,16 @@ let head (net : t) =
 
 let rec people = function [] -> [] | h :: t -> fst h :: people t
 
+(*********Possibly bad below***********)
+let empty_network : t = []
+
+let add_person net id attributes neighbors =
+  (id, { attributes; neighbors }) :: net
+
+let get_person net id = List.assoc id net
+
+(******End possibly bad*******)
+
 let neighbors net id =
   try
     let p = List.assoc id net in

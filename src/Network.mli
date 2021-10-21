@@ -69,6 +69,29 @@ val head : t -> person_id
 val people : t -> person_id list
 (**[people net] is the list of person ids in the network*)
 
+(*********************This is likely bad************************)
+type edge = person_id * edge_info
+
+type person = {
+  attributes : attr;
+  neighbors : edge list;
+}
+(** The type of people*)
+
+val empty_network : t
+(** [empty_network] represents an empty_network*)
+
+val add_person : t -> person_id -> attr -> edge list -> t
+(** [add_person net id attributes neighbors] is the network formed by
+    adding the person [id] with [attributes] and [neighbors] to [net].
+    Requires: neighbors is a valid list of person_ids, [net] is a valid
+    network, [person_id] is unique*)
+
+val get_person : t -> person_id -> person
+
+(*********************End bad*******************)
+
+
 val neighbors : t -> person_id -> person_id list
 (**[neighbors net p] is a set-like list of all the people who [p] has an
    interaction with in network [net]. Raises [UnknownPerson p] if the
