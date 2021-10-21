@@ -50,11 +50,127 @@ let state_test
   name >:: fun _ -> assert_equal expected_output (update_state state_in)
 (* ~printer *)
 
+(** [head_test name net expected_output] constructs an OUnit test named
+    [name] that asserts the quality of [expected_output] with
+    [head net]. *)
+let head_test name net expected_output : test =
+  name >:: fun _ -> assert_equal expected_output (head net)
+
+(** [neighbors_test name net id expected_output] constructs an OUnit
+    test named [name] that asserts the quality of [expected_output] with
+    [neighbors net id]. *)
+let neighbors_test name net id expected_output : test =
+  name >:: fun _ -> assert_equal expected_output (neighbors net id)
+
+(** [get_position_test name net id expected_output] constructs an OUnit
+    test named [name] that asserts the quality of [expected_output] with
+    [get_position net id]. *)
+let get_position_test name net id expected_output : test =
+  name >:: fun _ -> assert_equal expected_output (get_position net id)
+
+(** [get_attributes_test name net id expected_output] constructs an
+    OUnit test named [name] that asserts the quality of
+    [expected_output] with [get_attributes net id]. *)
+let get_attributes_test name net id expected_output : test =
+  name >:: fun _ -> assert_equal expected_output (get_attributes net id)
+
+(** [edge_information_test name net id1 id2 expected_output] constructs
+    an OUnit test named [name] that asserts the quality of
+    [expected_output] with [get_information net id1 id2]. *)
+let edge_information_test name net id1 id2 expected_output : test =
+  name >:: fun _ ->
+  assert_equal expected_output (edge_information net id1 id2)
+
 (******************************************************************************
   End test constructors.
+  Start Initialize Testing Variables
  ******************************************************************************)
 
-let network_tests = []
+let dat = Yojson.Basic.from_file "data/basic_network.json"
+
+let net1 = from_json dat
+
+let attr1 =
+  {
+    infected = Not_infected;
+    mask = "Yes";
+    immunity = 0.0;
+    position = [ 1; 2 ];
+  }
+
+let attr2 =
+  {
+    infected = Infected;
+    mask = "No";
+    immunity = 0.0;
+    position = [ 2; 4 ];
+  }
+
+let edge_info12 = { distance = 3.5; risk = "high" }
+
+let edge_info13 = { distance = 2.0; risk = "low" }
+
+let network_tests =
+  [
+    head_test {| head of net1 is 1|} net1 1;
+    neighbors_test {|neighbors of person 1 in net1 is [2;3]|} net1 1
+      [ 2; 3 ];
+    neighbors_test {|neighbors of person 2 in net1 is [1]|} net1 2 [ 1 ];
+    neighbors_test {|neighbors of person 3 in net1 is [1]|} net1 3 [ 1 ];
+    get_position_test "position of person 1 in net1 is [1;2]" net1 1
+      [ 1; 2 ];
+    get_position_test "position of person 2 in net1 is [2;4]" net1 2
+      [ 2; 4 ];
+    get_attributes_test "attributes of person 1 in net1 is [attr1]" net1
+      1 attr1;
+    get_attributes_test "attributes of person 1 in net1 is [attr2]" net1
+      2 attr2;
+    edge_information_test
+      "edge information of edge between person 1 and person 2 in net1 \
+       is edge_info12"
+      net1 1 2 edge_info12;
+    edge_information_test
+      "edge information of edge between person 2 and person 1 in net1 \
+       is edge_info12"
+      net1 2 1 edge_info12;
+    edge_information_test
+      "edge information of edge between person 1 and person 3 in net1 \
+       is edge_info12"
+      net1 1 3 edge_info13;
+    edge_information_test
+      "edge information of edge between person 3 and person 1 in net1 \
+       is edge_info12"
+      net1 3 1 edge_info13;
+    ( "neighbors of person 4 in net1 should raise UnknownPerson \
+       exception"
+    >:: fun _ ->
+      assert_raises (UnknownPerson 4) (fun () -> neighbors net1 4) );
+    ( "get_position of person 4 in net1 should raise UnknownPerson \
+       exception"
+    >:: fun _ ->
+      assert_raises (UnknownPerson 4) (fun () -> get_position net1 4) );
+    ( "get_attributes of person 4 in net1 should raise UnknownPerson \
+       exception"
+    >:: fun _ ->
+      assert_raises (UnknownPerson 4) (fun () -> get_attributes net1 4)
+    );
+    ( "edge_information of person 1 and person 4 in net1 should raise \
+       UnknownPerson exception"
+    >:: fun _ ->
+      assert_raises (UnknownPerson 4) (fun () ->
+          edge_information net1 1 4) );
+    ( "edge_information of person 4 and person 5 in net1 should raise \
+       UnknownPerson exception"
+    >:: fun _ ->
+      assert_raises (UnknownPerson 4) (fun () ->
+          edge_information net1 4 5) );
+    ( "edge_information of person 2 and person 3 in net1 should raise \
+       UnknownEdge exception"
+    >:: fun _ ->
+      assert_raises
+        (UnknownEdge (2, 3))
+        (fun () -> edge_information net1 2 3) );
+  ]
 
 let basic_before = get_net_rep "data/basic_network.json"
 
@@ -63,10 +179,10 @@ let basic_after = get_net_rep "data/basic_network_stepped.json"
 let state_tests =
   [
     state_test
-      "basic_network.json stepped forward is \
-       basic_network_stepped.json, assuming infection prob is \
-       identically 1"
-      basic_before basic_after;
+      "basic_network.json stepped forward is\n\
+      \   basic_network_stepped.json, assuming infection prob is  \
+       identically\n\
+      \  1" basic_before basic_after;
   ]
 
 let suite =

@@ -82,8 +82,10 @@ let head (net : t) =
   match net with [] -> raise InvalidJSON | h :: t -> fst h
 
 let neighbors net id =
-  let p = List.assoc id net in
-  p.neighbors |> List.map (fun x -> fst x)
+  try
+    let p = List.assoc id net in
+    p.neighbors |> List.map (fun x -> fst x)
+  with Not_found -> raise (UnknownPerson id)
 
 let get_attributes net id =
   try
@@ -93,12 +95,14 @@ let get_attributes net id =
 
 let get_position net id = (get_attributes net id).position
 
-let edge_info net id1 id2 =
+let edge_information net id1 id2 =
   if List.mem_assoc id1 net then
     try
       let p = List.assoc id1 net in
       p.neighbors |> List.assoc id2
-    with Not_found -> raise (UnknownEdge (id1, id2))
+    with Not_found ->
+      if List.mem_assoc id2 net then raise (UnknownEdge (id1, id2))
+      else raise (UnknownPerson id2)
   else raise (UnknownPerson id1)
 
 (*** Evil below ***)
