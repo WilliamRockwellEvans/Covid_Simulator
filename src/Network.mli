@@ -79,8 +79,9 @@ val get_position : t -> person_id -> position
     Raises [UnknownPerson p] if person [p] does not exist in [net]*)
 
 val get_attributes : t -> person_id -> attr
-(** attributes net p] is the attributes of person [p] in network [net].
-    Raises [UnknownPerson p] if person [p] does not exist in [net]*)
+(** [get_attributes net p] is the attributes of person [p] in network
+    [net]. Raises [UnknownPerson p] if person [p] does not exist in
+    [net]*)
 
 val edge_information : t -> person_id -> person_id -> edge_info
 (** [get_edge_info net p1 p2] is the edge information of the edge
