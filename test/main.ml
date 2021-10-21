@@ -86,9 +86,7 @@ let edge_information_test name net id1 id2 expected_output : test =
   Start Initialize Testing Variables
  ******************************************************************************)
 
-let dat = Yojson.Basic.from_file "data/basic_network.json"
-
-let net1 = from_json dat
+let net1 = get_net_rep "data/basic_network.json"
 
 let attr1 =
   {

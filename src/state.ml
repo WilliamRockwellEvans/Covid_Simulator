@@ -41,7 +41,7 @@ let process_node state (n : Network.person_id) =
     | h :: t -> lst_itr (infection_prob n h :: acc) t
     | [] -> acc
   in
-  lst_itr [] (Network.neighbors n state)
+  lst_itr [] (Network.neighbors state n)
   |> List.map rand_bool
   |> List.exists (fun x -> x)
 
@@ -68,7 +68,7 @@ let generate_updates state tracker =
               inf_acc
               (generate_rec h new_inf_acc)
     in
-    lst_itr (Network.neighbors node state)
+    lst_itr (Network.neighbors state node)
   in
   generate_rec (Network.head state) NodeMap.empty
 
