@@ -116,6 +116,6 @@ let write_title () =
 
 
 let () = Graphics.open_graph " 700x700";;
-
+get_person_net ppl edges;
 write_title ();
 
