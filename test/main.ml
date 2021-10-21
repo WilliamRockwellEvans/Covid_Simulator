@@ -34,6 +34,8 @@ let pp_list pp_elt lst =
   in
   "[" ^ pp_elts lst ^ "]"
 
+(** [pp_network net] pretty-prints network [net]*)
+
 (**[get_net_rep filepath] parses the json file at [filepath] into
    Network.t*)
 let get_net_rep filepath : Network.t =

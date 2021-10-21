@@ -57,65 +57,64 @@ let draw_net (x, y) l n sc st : unit =
   Array.iter draw_machine r;
   Graphics.fill_circle x y st
 
-let color_of_state = function 
-| Infected -> Graphics.red
-| Not_infected -> Graphics.blue
+let color_of_state = function
+  | Infected -> Graphics.red
+  | Not_infected -> Graphics.blue
 
-let rec draw_person_lst r = function 
-| [] -> ()
-| (x, y, st) :: t -> 
-  st |> color_of_state |> Graphics.set_color;
-  Graphics.fill_circle x y r;
-  Graphics.set_color Graphics.foreground;
-  Graphics.draw_circle x y r;
+let rec draw_person_lst r = function
+  | [] -> ()
+  | (x, y, st) :: t ->
+      st |> color_of_state |> Graphics.set_color;
+      Graphics.fill_circle x y r;
+      Graphics.set_color Graphics.foreground;
+      Graphics.draw_circle x y r;
 
-  draw_person_lst r t;;
+      draw_person_lst r t
 
-let rec draw_edges_lst = function 
-| [] -> ()
-| ((x1,y1), (x2,y2)) :: t -> 
-  Graphics.moveto x1 y1;
-  Graphics.lineto x2 y2;
-  draw_edges_lst t;;
+let rec draw_edges_lst = function
+  | [] -> ()
+  | ((x1, y1), (x2, y2)) :: t ->
+      Graphics.moveto x1 y1;
+      Graphics.lineto x2 y2;
+      draw_edges_lst t
 
-let get_person_net point_lst line_lst = 
+let get_person_net point_lst line_lst =
   let a, b = Graphics.current_point () in
   draw_edges_lst line_lst;
   draw_person_lst 10 point_lst;
-  Graphics.moveto a b;;
+  Graphics.moveto a b
 
 let person_of_graph = function
-| ([x;y], i) -> (100*x,100*y,i)
-| _ -> failwith "bad"
+  | [ x; y ], i -> (100 * x, 100 * y, i)
+  | _ -> failwith "bad"
 
-let edge_of_graph = function 
-| ([x1;y1],[x2;y2])-> ((100*x1,100*y1), (100*x2,100*y2))
-| _ -> failwith "bad"
+let edge_of_graph = function
+  | [ x1; y1 ], [ x2; y2 ] ->
+      ((100 * x1, 100 * y1), (100 * x2, 100 * y2))
+  | _ -> failwith "bad"
 
-let graph_of_json file = 
+let graph_of_json file =
   file |> Yojson.Basic.from_file |> from_json |> create_graph
 
 let nodes_of_graph g = g.nodes
 
 let edges_of_graph g = g.edges
 
-let stepped_graph = "basic_network_stepped.json" |> graph_of_json 
+let stepped_graph = "basic_network_stepped.json" |> graph_of_json
 
 let ppl = stepped_graph |> nodes_of_graph |> List.map person_of_graph
 
-let edges = stepped_graph |> edges_of_graph |> List.map edge_of_graph ;;
+let edges = stepped_graph |> edges_of_graph |> List.map edge_of_graph
 
-let write_title () = 
-  let (a,b) = Graphics.current_point () in
-  let x_tot = Graphics.size_x () in 
-  let y_tot = Graphics.size_y () in 
-  let title = "Covid Network" in 
-  Graphics.moveto (x_tot/2) (8*y_tot/9);
+let write_title () =
+  let a, b = Graphics.current_point () in
+  let x_tot = Graphics.size_x () in
+  let y_tot = Graphics.size_y () in
+  let title = "Covid Network" in
+  Graphics.moveto (x_tot / 2) (8 * y_tot / 9);
   Graphics.draw_string title;
-  Graphics.moveto a b;;
-
+  Graphics.moveto a b
 
 let () = Graphics.open_graph " 700x700";;
 
-write_title ();
-
+write_title ()
