@@ -60,4 +60,3 @@ let draw_net (x, y) l n sc st : unit =
   Graphics.fill_circle x y st
 
 let () = draw_net (140, 20) 60.0 10 10 3
-

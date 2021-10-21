@@ -20,9 +20,18 @@ type position = int list
     of the list is the x value, the second is the y value. Precondition:
     position has exactly two elements *)
 
+type line = position * position
+(** the type of a line between two points in a grid*)
+
 type infected =
   | Infected
   | Not_infected  (**The type of the state of infection of a person*)
+
+type graph = {
+  nodes : (position * infected) list;
+  edges : line list;
+}
+(** The type of a graph for the network*)
 
 type edge_info = {
   distance : float;
@@ -55,7 +64,10 @@ val from_json : Yojson.Basic.t -> t
     valid JSON network representation. *)
 
 val head : t -> person_id
-(**[head net] is the first person in the network (as specified in csv)*)
+(**[head net] is the first person in the network*)
+
+val people : t -> person_id list
+(**[people net] is the list of person ids in the network*)
 
 val neighbors : t -> person_id -> person_id list
 (**[neighbors net p] is a set-like list of all the people who [p] has an
@@ -75,3 +87,7 @@ val edge_information : t -> person_id -> person_id -> edge_info
     between person [p1] and person [p2]. Raised [UnknownPerson p1] if p1
     does not exist in [net]. Raises [UnknownEdge (p1,p2)] if an edge
     between [p1] and [p2] does not exist.*)
+
+val create_graph : t -> graph
+(** [create_graph net] is the graph type representation of the network
+    net to bet used in the GUI *)
