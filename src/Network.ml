@@ -57,33 +57,41 @@ let string_to_infected = function
   | s when s = "No" -> Not_infected
   | s -> raise InvalidJSON
 
+let apply_unpackage f name h = member name h |> f
+
+let unpackage_int = apply_unpackage to_int
+
+let unpackage_flt = apply_unpackage to_float
+
+let unpackage_str = apply_unpackage to_string
+
+let unpackage_lst = apply_unpackage to_list
+
 let edge_from_json j =
-  ( j |> member "person_id" |> to_int,
+  ( j |> unpackage_int "person_id",
     {
-      distance = j |> member "distance" |> to_float;
-      risk = j |> member "risk" |> to_string;
+      distance = j |> unpackage_flt "distance";
+      risk = j |> unpackage_str "risk";
     } )
 
 let person_from_json j =
   {
     attributes =
       {
-        infected =
-          j |> member "infected" |> to_string |> string_to_infected;
-        mask = j |> member "mask" |> to_string;
-        immunity = j |> member "immunity" |> to_float;
+        infected = j |> unpackage_str "infected" |> string_to_infected;
+        mask = j |> unpackage_str "mask";
+        immunity = j |> unpackage_flt "immunity";
         position =
-          j |> member "position" |> to_list
+          j
+          |> unpackage_lst "position"
           |> List.map (fun x -> x |> to_int);
       };
-    neighbors =
-      j |> member "edges" |> to_list |> List.map edge_from_json;
+    neighbors = j |> unpackage_lst "edges" |> List.map edge_from_json;
   }
 
-let make_person j = (j |> member "id" |> to_int, person_from_json j)
+let make_person j = (j |> unpackage_int "id", person_from_json j)
 
-let from_json j =
-  j |> member "people" |> to_list |> List.map make_person
+let from_json j = j |> unpackage_lst "people" |> List.map make_person
 
 let head (net : t) =
   match net with [] -> raise InvalidJSON | h :: t -> fst h
