@@ -123,4 +123,8 @@ let edges =
 let () = Graphics.open_graph " 700x700";;
 
 Gui.get_person_net ppl edges;
-Gui.write_title ()
+Gui.write_title ();
+
+Graphics.read_key ();
+
+Graphics.close_graph ();

@@ -1,6 +1,8 @@
 (* let get_neighbors node edge_lst = List.map (fun (_,b) -> b)
    (List.filter (fun (a,_) -> a == node) edge_lst) *)
 
+type t = Network.t
+
 let rec get_info graph s acc = function
   | [] -> List.rev acc
   | h :: t ->
@@ -21,6 +23,7 @@ let rec propogate_infection (attr : Network.attr) neighbors acc =
 let visited n lst = List.filter (fun (a, _) -> a = n) lst <> []
 
 let dfs_infection (graph : Network.t) start =
+  
   let rec dfs_aux curr_res n =
     if visited n curr_res then curr_res
       (* node's paths have already been updated *)
@@ -34,7 +37,6 @@ let dfs_infection (graph : Network.t) start =
       (* let info = Network.edge_information n *)
       (* need to call recursively on all of the neighbors *)
       List.fold_left dfs_aux ((n, attr.infected) :: new_res) neigh
-    (* List.fold_left dfs_aux res ():: visited) *)
   in
 
   let a =
