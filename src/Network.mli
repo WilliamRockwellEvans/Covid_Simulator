@@ -1,16 +1,64 @@
 (**Representation of static social network.
 
-   This module handles the data stored in the file that stores a social
-   network. It includes the data of the people and their interactions.
-   It handles loading of two csv files (attribute list and edge list)
-   that include the initial conditions and the parameters of the
-   network, as well as querying the data. The attribute list csv file
-   will contain the individual parameters of the people in the network.
-   The edge list csv file will contain each interaction and their
-   respective parameters.*)
+   This module handles the data stored in a JSON file with the
+   information of network and virus of study. The JSON being handled
+   includes the data of the people and their interactions as initial
+   conditions, as well as the parameters of the network and the virus.
+   This module creates a representation of the network and can be used
+   to query information about the network to be used in a GUI*)
 
 type t
 (** The abstract type of the values representing infection network*)
+
+(******************************************************************************
+  Start Parameter Types.
+ ******************************************************************************)
+(********** Individual Parameters **********)
+type sociability =
+  | Low
+  | Medium
+  | High  (**The type of the level of sociability of a person*)
+
+type mask =
+  | Masked
+  | Not_masked  (**The type of the mask of a person*)
+
+type vaccine_doses =
+  | Two_or_more
+  | One
+  | Zero  (**The type of vaccine doses of a person*)
+
+type infected =
+  | Infected
+  | Not_infected  (**The type of the state of infection of a person*)
+
+type interaction_time =
+  | Short
+  | Regular
+  | Long  (**The type of the length of an interaction between nodes *)
+
+(********** Population Parameters **********)
+type location =
+  | Indoors
+  | Outdoors  (**The type of the location of the network*)
+
+type density =
+  | Low_density
+  | Med_density
+  | High_density  (**The type of the population density of the network*)
+
+(********** Virus Parameters **********)
+type incubation_time =
+  | Days of int
+  | Weeks of int
+      (**The type of incudbation time in either units of days or weeks*)
+
+type mortality_rate = float
+(**The type of mortality rate of infected people (between 0 and 1)*)
+
+(******************************************************************************
+  End Parameter Types.
+  ******************************************************************************)
 
 type person_id = int
 (** The type of person identifiers*)
@@ -23,10 +71,6 @@ type position = int list
 type line = position * position
 (** the type of a line between two points in a grid*)
 
-type infected =
-  | Infected
-  | Not_infected  (**The type of the state of infection of a person*)
-
 type graph = {
   nodes : (position * infected) list;
   edges : line list;
@@ -35,17 +79,31 @@ type graph = {
 
 type edge_info = {
   distance : float;
-  risk : string;
+  time : interaction_time;
 }
 (** The type of edge information.*)
 
 type attr = {
   infected : infected;
-  mask : string;
-  immunity : float;
+  sociability : sociability;
+  mask : mask;
   position : position;
+  vaccine_doses : vaccine_doses;
 }
 (** The type of individual attributes of person [id]*)
+
+type population = {
+  location : location;
+  density : density;
+}
+(**The type of the population of the network*)
+
+type virus = {
+  name : string;
+  incubation_time : incubation_time;
+  mortality_rate : mortality_rate;
+}
+(**The type of the virus present in the network*)
 
 exception UnknownPerson of person_id
 (** Raised when [person_id] is not in the network*)
@@ -78,9 +136,6 @@ type person = {
 }
 (** The type of people*)
 
-val empty_network : t
-(** [empty_network] represents an empty_network*)
-
 val add_person : t -> person_id -> attr -> edge list -> t
 (** [add_person net id attributes neighbors] is the network formed by
     adding the person [id] with [attributes] and [neighbors] to [net].
@@ -90,7 +145,6 @@ val add_person : t -> person_id -> attr -> edge list -> t
 val get_person : t -> person_id -> person
 
 (*********************End bad*******************)
-
 
 val neighbors : t -> person_id -> person_id list
 (**[neighbors net p] is a set-like list of all the people who [p] has an
@@ -115,3 +169,11 @@ val edge_information : t -> person_id -> person_id -> edge_info
 val create_graph : t -> graph
 (** [create_graph net] is the graph type representation of the network
     net to bet used in the GUI *)
+
+val pop_parameters : t -> population
+(** [pop_parameters net] is the population type with the parameters of
+    network [net]*)
+
+val virus_info : t -> virus
+(** [virus_info net] is the virus type with the information of the virus
+    in the network *)

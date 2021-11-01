@@ -112,7 +112,7 @@ let write_title () =
 
 end 
 
-let stepped_graph = "basic_network_stepped.json" |> Gui.graph_of_json 
+let stepped_graph = "data/basic_network_stepped.json" |> Gui.graph_of_json 
 
 let ppl = stepped_graph |> Gui.nodes_of_graph |> List.map Gui.person_of_graph
 
