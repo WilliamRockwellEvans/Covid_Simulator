@@ -236,7 +236,12 @@ let from_json j =
 let head (net : t) =
   match net.network with [] -> raise InvalidJSON | h :: t -> fst h
 
-let rec people = function [] -> [] | h :: t -> fst h :: people t
+let people net =
+  let rec people_help = function
+    | [] -> []
+    | h :: t -> fst h :: people_help t
+  in
+  people_help net.network
 
 let add_person net id attributes neighbors =
   (id, { attributes; neighbors }) :: net.network
@@ -271,7 +276,7 @@ let edge_information net id1 id2 =
   else raise (UnknownPerson id1)
 
 let create_graph net =
-  let idlist = people net.network in
+  let idlist = people net in
   let pi netw id =
     ( get_position netw id,
       let attr = get_attributes netw id in
