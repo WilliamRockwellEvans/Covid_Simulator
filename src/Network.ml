@@ -145,9 +145,9 @@ let string_to_density = function
    corresponding incubation_time type. Raises Failure "Invalid JSON
    input" if [s] does not correspond to a incubation_time type.*)
 let string_to_incubation_time = function
-  | s when String.sub s 2 (String.length s) = "days" ->
+  | s when String.sub s 2 (String.length s - 2) = "days" ->
       Days (int_of_char s.[0])
-  | s when String.sub s 2 (String.length s) = "weeks" ->
+  | s when String.sub s 2 (String.length s - 2) = "weeks" ->
       Weeks (int_of_char s.[0])
   | s -> raise InvalidJSON
 
@@ -250,6 +250,8 @@ let add_person net id attributes neighbors =
     network = (id, { attributes; neighbors }) :: net.network;
   }
 
+let empty_network pop virus = { population = pop; virus; network = [] }
+
 let get_person net id = List.assoc id net.network
 
 (******End possibly bad*******)
@@ -302,6 +304,71 @@ let create_graph net =
   in
   let nlist = List.map pi' idlist in
   { nodes = nlist; edges }
+
+(** [pp_list pp_elt demarc lst] pretty-prints list [lst], using [pp_elt]
+    to pretty-print each element of [lst], and using demarcation
+    [demarc] to separate elements. *)
+let pp_list pp_elt demarc lst =
+  let pp_elts lst =
+    let rec loop n acc = function
+      | [] -> acc
+      | [ h ] -> acc ^ pp_elt h
+      | h1 :: (h2 :: t as t') ->
+          if n = 100 then acc ^ "..." (* stop printing long list *)
+          else loop (n + 1) (acc ^ pp_elt h1 ^ demarc) t'
+    in
+    loop 0 "" lst
+  in
+  "[" ^ pp_elts lst ^ "]"
+
+let time_pp = function
+  | Short -> "short"
+  | Regular -> "regular"
+  | Long -> "long"
+
+let sociability_pp = function
+  | Low -> "low"
+  | Medium -> "medium"
+  | High -> "high"
+
+let mask_pp = function Masked -> "masked" | Not_masked -> "no mask"
+
+let vaccine_pp = function Two_or_more -> 2 | One -> 1 | Zero -> 0
+
+let edge_pp (e : edge) =
+  Printf.sprintf "id: %i, edge_info: %s" (fst e)
+    (Printf.sprintf "(distance: %F, risk: %s)" (snd e).distance
+       (time_pp (snd e).time))
+
+let neighbor_pp = pp_list edge_pp "; "
+
+let infected_pp = function
+  | Infected -> "infected"
+  | Not_infected -> "not infected"
+
+let position_printer (pos : position) =
+  Printf.sprintf "(%i, %i)" (List.hd pos) (List.hd (List.tl pos))
+
+let attr_printer (a : attr) =
+  Printf.sprintf
+    "Status: %s; mask: %s; sociability: %s; vaccine doses: %i; \
+     position: %s;"
+    (infected_pp a.infected)
+    (mask_pp a.mask)
+    (sociability_pp a.sociability)
+    (vaccine_pp a.vaccine_doses)
+    (position_printer a.position)
+
+let person_printer (p : person) =
+  Printf.sprintf "%s %s"
+    (attr_printer p.attributes)
+    (neighbor_pp p.neighbors)
+
+let graph_tuple_printer (id, pers) =
+  Printf.sprintf "id: %i; %s" id (person_printer pers)
+
+let graph_printer (net : t) =
+  pp_list graph_tuple_printer ";\n" net.network ^ "\n"
 
 let pop_parameters net = net.population
 

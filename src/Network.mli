@@ -96,7 +96,7 @@ type population = {
   location : location;
   density : density;
 }
-(**The type of the population of the network*)
+(** The type of the population of the network*)
 
 type virus = {
   name : string;
@@ -170,6 +170,9 @@ val create_graph : t -> graph
 (** [create_graph net] is the graph type representation of the network
     net to bet used in the GUI *)
 
+val graph_printer : t -> string
+(** [graph_printer net] pretty prints [net]*)
+
 val pop_parameters : t -> population
 (** [pop_parameters net] is the population type with the parameters of
     network [net]*)
@@ -177,3 +180,6 @@ val pop_parameters : t -> population
 val virus_info : t -> virus
 (** [virus_info net] is the virus type with the information of the virus
     in the network *)
+
+val empty_network : population -> virus -> t
+(** [empty_network pop virus] is an empty network with [pop] and [virus]*)
