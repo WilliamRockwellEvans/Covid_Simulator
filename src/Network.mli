@@ -180,3 +180,6 @@ val pop_parameters : t -> population
 val virus_info : t -> virus
 (** [virus_info net] is the virus type with the information of the virus
     in the network *)
+
+val empty_network : population -> virus -> t
+(** [empty_network pop virus] is an empty network with [pop] and [virus]*)

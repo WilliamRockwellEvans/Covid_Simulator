@@ -145,9 +145,9 @@ let string_to_density = function
    corresponding incubation_time type. Raises Failure "Invalid JSON
    input" if [s] does not correspond to a incubation_time type.*)
 let string_to_incubation_time = function
-  | s when String.sub s 2 (String.length s) = "days" ->
+  | s when String.sub s 2 (String.length s - 2) = "days" ->
       Days (int_of_char s.[0])
-  | s when String.sub s 2 (String.length s) = "weeks" ->
+  | s when String.sub s 2 (String.length s - 2) = "weeks" ->
       Weeks (int_of_char s.[0])
   | s -> raise InvalidJSON
 
@@ -249,6 +249,8 @@ let add_person net id attributes neighbors =
     virus = net.virus;
     network = (id, { attributes; neighbors }) :: net.network;
   }
+
+let empty_network pop virus = { population = pop; virus; network = [] }
 
 let get_person net id = List.assoc id net.network
 

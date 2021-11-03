@@ -88,7 +88,11 @@ let rec apply_changes (state : Network.t) changes =
              new_person.neighbors)
           t
   in
-  iterate_people Network.empty_network (Network.people state)
+  iterate_people
+    (Network.empty_network
+       (Network.pop_parameters state)
+       (Network.virus_info state))
+    (Network.people state)
 
 let update_state state =
   generate_updates state (new visitedTracker) |> apply_changes state
