@@ -137,7 +137,25 @@ module Gui = struct
   let get_time c =
     if isDigitChar c then Char.code c - 48
     else failwith "Not a number input"
+
+  let is_escape_key c = c |> Char.code |> (fun x -> x = 27)
+
+  let rec update_status graph stat = 
+    if stat.keypressed then 
+      begin 
+      if stat.key |> is_escape_key then Graphics.close_graph ()
+      else 
+        if stat.key |> isDigitChar then 
+        let updated = time_update (stat.key |> get_time) graph in 
+        update_status updated stat;
+      else () ;
+    end
+    else
+      () ;
+
 end
+
+let events = [Graphics.Key_pressed; Graphics.Button_down; Graphics.Button_up; Graphics.Poll]
 
 let g = Gui.unpackage_graph "data/basic_network_stepped.json"
 
@@ -153,9 +171,6 @@ let () = Graphics.open_graph " 700x700";;
 Gui.get_person_net ppl edges;
 Gui.write_title ();
 
-let time = Graphics.read_key () in
+let _ = Graphics.loop_at_exit events (Gui.update_status g) in 
 
-let _ = Gui.time_update (time |> Gui.get_time) g in
-let t2 = Graphics.read_key () in
-
-Graphics.close_graph ()
+()
