@@ -244,7 +244,11 @@ let people net =
   people_help net.network
 
 let add_person net id attributes neighbors =
-  (id, { attributes; neighbors }) :: net.network
+  {
+    population = net.population;
+    virus = net.virus;
+    network = (id, { attributes; neighbors }) :: net.network;
+  }
 
 let get_person net id = List.assoc id net.network
 

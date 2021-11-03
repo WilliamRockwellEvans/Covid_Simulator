@@ -11,10 +11,10 @@
   "people": [
     {
       "id": 1,
-      "infected": "Yes",
+      "infected": "yes",
       "sociability": "high",
       "vaccine doses": 0,
-      "mask": "Yes",
+      "mask": "yes",
       "position": [
         1,
         2
@@ -34,10 +34,10 @@
     },
     {
       "id": 2,
-      "infected": "Yes",
+      "infected": "yes",
       "sociability": "medium",
       "vaccine doses": 2,
-      "mask": "No",
+      "mask": "no",
       "position": [
         2,
         4
@@ -62,10 +62,10 @@
     },
     {
       "id": 3,
-      "infected": "No",
+      "infected": "no",
       "sociability": "medium",
       "vaccine doses": 1,
-      "mask": "No",
+      "mask": "no",
       "position": [
         3,
         2
@@ -85,10 +85,10 @@
     },
     {
       "id": 4,
-      "infected": "Yes",
+      "infected": "yes",
       "sociability": "low",
       "vaccine doses": 0,
-      "mask": "No",
+      "mask": "no",
       "position": [
         5,
         1
@@ -108,10 +108,10 @@
     },
     {
       "id": 5,
-      "infected": "No",
+      "infected": "no",
       "sociability": "medium",
       "vaccine doses": 2,
-      "mask": "Yes",
+      "mask": "yes",
       "position": [
         2,
         6
