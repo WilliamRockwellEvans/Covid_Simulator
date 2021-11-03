@@ -6,33 +6,33 @@ module PersonKey = struct
   let compare = Stdlib.compare
 end
 
-module NodeMap = Map.Make (PersonKey)
+module NodeSet = Set.Make (PersonKey)
 
 (* [visitedTracker] implements a logger for tracking which nodes have
    been visited during a graph traversal*)
 class visitedTracker =
   object (self)
-    val mutable map = NodeMap.empty (* can i make this private?*)
+    val mutable visited = NodeSet.empty (* can i make this private?*)
 
     (* [add_visit n] updates tracker with the fact that node [n] has
        been visited *)
-    method add_visit n = map <- NodeMap.add n true map
+    method add_visit n = visited <- NodeSet.add n visited
 
     (* [was_visited n] is if node [n] has been visited before*)
     method was_visited (n : Network.person_id) : bool =
-      NodeMap.mem n map
+      NodeSet.mem n visited
 
     (* [clear] deletes all entries from the tracker *)
-    method clear = map <- NodeMap.empty
+    method clear = visited <- NodeSet.empty
   end
 
 (* [infection_prob node neighbor] is the likelihood of [node] being
    infected by [neighbor]*)
 let infection_prob (n : Network.person_id) neighbor = 1.
 
-(* [rand_bool prob] generates a boolean with [True] having probability
-   [prob] *)
-let rand_bool prob : bool = prob <= Random.float 1.
+(* [rand_bool prob] generates [true] with probability [prob], otherwise
+   [false] *)
+let rand_bool prob : bool = Random.float 1. < prob
 
 (* [process_node state n] is if node [n] in state [state] gets infected
    by its neighbors *)
@@ -41,7 +41,11 @@ let process_node state (n : Network.person_id) =
     | h :: t -> lst_itr (infection_prob n h :: acc) t
     | [] -> acc
   in
-  lst_itr [] (Network.neighbors state n)
+  lst_itr []
+    (Network.neighbors state n
+    |> List.filter (fun neighbor ->
+           (Network.get_attributes state neighbor).infected = Infected)
+    )
   |> List.map rand_bool
   |> List.exists (fun x -> x)
 
@@ -51,26 +55,18 @@ let generate_updates state tracker =
   let rec generate_rec (node : Network.person_id) inf_acc =
     tracker#add_visit node;
     let new_inf_acc =
-      if process_node state node then NodeMap.add node true inf_acc
+      if process_node state node then NodeSet.add node inf_acc
       else inf_acc
     in
     let rec lst_itr = function
-      | [] -> NodeMap.empty
+      | [] -> new_inf_acc
       | h :: t ->
           if tracker#was_visited h then lst_itr t
-          else
-            NodeMap.merge
-              (fun h o1 o2 ->
-                match (o1, o2) with
-                | None, None -> None
-                | None, Some v | Some v, None -> Some v
-                | _, _ -> failwith "Invalid arg: maps aren't disjoint")
-              inf_acc
-              (generate_rec h new_inf_acc)
+          else NodeSet.union (generate_rec h new_inf_acc) (lst_itr t)
     in
     lst_itr (Network.neighbors state node)
   in
-  generate_rec (Network.head state) NodeMap.empty
+  generate_rec (Network.head state) NodeSet.empty
 
 (* [apply_changes state changes] parses through the graph and applies
    [changes]*)
@@ -79,17 +75,24 @@ let rec apply_changes (state : Network.t) changes =
     | [] -> net_acc
     | h :: t ->
         let pers = Network.get_person state h in
-        let new_acc =
-          if NodeMap.mem h changes then
-            Network.add_person net_acc h
-              { pers.attributes with infected = Infected }
-              pers.neighbors
-          else
-            Network.add_person net_acc h pers.attributes pers.neighbors
+        let new_person =
+          if NodeSet.mem h changes then
+            {
+              pers with
+              attributes = { pers.attributes with infected = Infected };
+            }
+          else pers
         in
-        iterate_people new_acc t
+        iterate_people
+          (Network.add_person net_acc h new_person.attributes
+             new_person.neighbors)
+          t
   in
-  iterate_people Network.empty_network (Network.people state)
+  iterate_people
+    (Network.empty_network
+       (Network.pop_parameters state)
+       (Network.virus_info state))
+    (Network.people state)
 
 let update_state state =
   generate_updates state (new visitedTracker) |> apply_changes state

@@ -14,10 +14,43 @@ exception InvalidPosition of position
 
 exception InvalidJSON
 
-(**The type of the state of infection of a person*)
 type infected =
   | Infected
   | Not_infected
+
+type sociability =
+  | Low
+  | Medium
+  | High
+
+type mask =
+  | Masked
+  | Not_masked
+
+type vaccine_doses =
+  | Two_or_more
+  | One
+  | Zero
+
+type interaction_time =
+  | Short
+  | Regular
+  | Long
+
+type location =
+  | Indoors
+  | Outdoors
+
+type density =
+  | Low_density
+  | Med_density
+  | High_density
+
+type incubation_time =
+  | Days of int
+  | Weeks of int
+
+type mortality_rate = float
 
 type graph = {
   nodes : (position * infected) list;
@@ -26,17 +59,27 @@ type graph = {
 
 type edge_info = {
   distance : float;
-  risk : string;
+  time : interaction_time;
 }
-(** The type of edge information.*)
 
 type attr = {
   infected : infected;
-  mask : string;
-  immunity : float;
+  sociability : sociability;
+  mask : mask;
   position : position;
+  vaccine_doses : vaccine_doses;
 }
-(** The type of individual attributes of person [id]*)
+
+type population = {
+  location : location;
+  density : density;
+}
+
+type virus = {
+  name : string;
+  incubation_time : incubation_time;
+  mortality_rate : mortality_rate;
+}
 
 type edge = person_id * edge_info
 (**The type of an edge*)
@@ -47,31 +90,110 @@ type person = {
 }
 (** The type of a person*)
 
-type t = (person_id * person) list
+type t = {
+  population : population;
+  virus : virus;
+  network : (person_id * person) list;
+}
 
-(**string_of_infected [s] is conversion of [s] to its corresponding
+(********* Helper json parsing functions **********)
+
+(**string_to_infected [s] is conversion of [s] to its corresponding
    infected type. Raises Failure "Invalid JSON input" if [s] does not
    correspond to an infected type.*)
 let string_to_infected = function
-  | s when s = "Yes" -> Infected
-  | s when s = "No" -> Not_infected
+  | s when s = "yes" -> Infected
+  | s when s = "no" -> Not_infected
   | s -> raise InvalidJSON
 
+(**string_to_mask [s] is conversion of [s] to its corresponding mask
+   type. Raises Failure "Invalid JSON input" if [s] does not correspond
+   to a mask type.*)
+let string_to_mask = function
+  | s when s = "yes" -> Masked
+  | s when s = "no" -> Not_masked
+  | s -> raise InvalidJSON
+
+(**int_to_vaccine_doses [i] is conversion of [i] to its corresponding
+   vaccine_doses type. Raises Failure "Invalid JSON input" if [i] does
+   not correspond to a vaccine_doses type.*)
+let int_to_vaccine_doses = function
+  | i when i >= 2 -> Two_or_more
+  | i when i = 1 -> One
+  | i when i = 0 -> Zero
+  | i -> raise InvalidJSON
+
+(**string_to_interaction_time [s] is conversion of [s] to its
+   corresponding interaction_time type. Raises Failure "Invalid JSON
+   input" if [s] does not correspond to a interaction_time type.*)
+let string_to_interaciton_time = function
+  | s when s = "long" -> Long
+  | s when s = "short" -> Short
+  | s when s = "regular" -> Regular
+  | s -> raise InvalidJSON
+
+(**string_to_density [s] is conversion of [s] to its corresponding
+   density type. Raises Failure "Invalid JSON input" if [s] does not
+   correspond to a density type.*)
+let string_to_density = function
+  | s when s = "high" -> High_density
+  | s when s = "low" -> Low_density
+  | s when s = "medium" -> Med_density
+  | s -> raise InvalidJSON
+
+(**string_to_incubation_time [s] is conversion of [s] to its
+   corresponding incubation_time type. Raises Failure "Invalid JSON
+   input" if [s] does not correspond to a incubation_time type.*)
+let string_to_incubation_time = function
+  | s when String.sub s 2 (String.length s - 2) = "days" ->
+      Days (int_of_char s.[0])
+  | s when String.sub s 2 (String.length s - 2) = "weeks" ->
+      Weeks (int_of_char s.[0])
+  | s -> raise InvalidJSON
+
+(**string_to_location [s] is conversion of [s] to its corresponding
+   location type. Raises Failure "Invalid JSON input" if [s] does not
+   correspond to a location type.*)
+let string_to_location = function
+  | s when s = "indoors" -> Indoors
+  | s when s = "outdoors" -> Outdoors
+  | s -> raise InvalidJSON
+
+(**string_to_sociability [s] is conversion of [s] to its corresponding
+   sociability type. Raises Failure "Invalid JSON input" if [s] does not
+   correspond to a sociability type.*)
+let string_to_sociability = function
+  | s when s = "low" -> Low
+  | s when s = "high" -> High
+  | s when s = "medium" -> Medium
+  | s -> raise InvalidJSON
+
+(********* End of helper json parsing functions **********)
+
+(**[edge_from_json j] parses an edge object from a JSON into an edge*)
 let edge_from_json j =
   ( j |> member "person_id" |> to_int,
     {
       distance = j |> member "distance" |> to_float;
-      risk = j |> member "risk" |> to_string;
+      time =
+        j
+        |> member "interaction time"
+        |> to_string |> string_to_interaciton_time;
     } )
 
+(**[person_from_json j] parses a person oject from a JSON into a person*)
 let person_from_json j =
   {
     attributes =
       {
         infected =
           j |> member "infected" |> to_string |> string_to_infected;
-        mask = j |> member "mask" |> to_string;
-        immunity = j |> member "immunity" |> to_float;
+        sociability =
+          j |> member "sociability" |> to_string
+          |> string_to_sociability;
+        mask = j |> member "mask" |> to_string |> string_to_mask;
+        vaccine_doses =
+          j |> member "vaccine doses" |> to_int |> int_to_vaccine_doses;
         position =
           j |> member "position" |> to_list
           |> List.map (fun x -> x |> to_int);
@@ -80,47 +202,82 @@ let person_from_json j =
       j |> member "edges" |> to_list |> List.map edge_from_json;
   }
 
+(**[make_person j] parses a person object from a JSON into a
+   [(person_id,person)] pair*)
 let make_person j = (j |> member "id" |> to_int, person_from_json j)
 
+(**[make_population j] parses a population parameters object from a JSON
+   into a population*)
+let make_population j =
+  {
+    location = j |> member "location" |> to_string |> string_to_location;
+    density = j |> member "density" |> to_string |> string_to_density;
+  }
+
+(**[make_virus j] parses a virus information object from a JSON into a
+   virus*)
+let make_virus j =
+  {
+    name = j |> member "virus name" |> to_string;
+    incubation_time =
+      j
+      |> member "incubation time"
+      |> to_string |> string_to_incubation_time;
+    mortality_rate = j |> member "mortality rate" |> to_float;
+  }
+
 let from_json j =
-  j |> member "people" |> to_list |> List.map make_person
+  {
+    population = make_population (j |> member "population parameters");
+    virus = make_virus (j |> member "virus information");
+    network = j |> member "people" |> to_list |> List.map make_person;
+  }
 
 let head (net : t) =
-  match net with [] -> raise InvalidJSON | h :: t -> fst h
+  match net.network with [] -> raise InvalidJSON | h :: t -> fst h
 
-let rec people = function [] -> [] | h :: t -> fst h :: people t
-
-(*********Possibly bad below***********)
-let empty_network : t = []
+let people net =
+  let rec people_help = function
+    | [] -> []
+    | h :: t -> fst h :: people_help t
+  in
+  people_help net.network
 
 let add_person net id attributes neighbors =
-  (id, { attributes; neighbors }) :: net
+  {
+    population = net.population;
+    virus = net.virus;
+    network = (id, { attributes; neighbors }) :: net.network;
+  }
 
-let get_person net id = List.assoc id net
+let empty_network pop virus = { population = pop; virus; network = [] }
+
+let get_person net id = List.assoc id net.network
 
 (******End possibly bad*******)
 
 let neighbors net id =
   try
-    let p = List.assoc id net in
+    let p = List.assoc id net.network in
     p.neighbors |> List.map (fun x -> fst x)
   with Not_found -> raise (UnknownPerson id)
 
 let get_attributes net id =
   try
-    let p = List.assoc id net in
+    let p = List.assoc id net.network in
     p.attributes
   with Not_found -> raise (UnknownPerson id)
 
 let get_position net id = (get_attributes net id).position
 
 let edge_information net id1 id2 =
-  if List.mem_assoc id1 net then
+  if List.mem_assoc id1 net.network then
     try
-      let p = List.assoc id1 net in
+      let p = List.assoc id1 net.network in
       p.neighbors |> List.assoc id2
     with Not_found ->
-      if List.mem_assoc id2 net then raise (UnknownEdge (id1, id2))
+      if List.mem_assoc id2 net.network then
+        raise (UnknownEdge (id1, id2))
       else raise (UnknownPerson id2)
   else raise (UnknownPerson id1)
 
@@ -147,3 +304,72 @@ let create_graph net =
   in
   let nlist = List.map pi' idlist in
   { nodes = nlist; edges }
+
+(** [pp_list pp_elt demarc lst] pretty-prints list [lst], using [pp_elt]
+    to pretty-print each element of [lst], and using demarcation
+    [demarc] to separate elements. *)
+let pp_list pp_elt demarc lst =
+  let pp_elts lst =
+    let rec loop n acc = function
+      | [] -> acc
+      | [ h ] -> acc ^ pp_elt h
+      | h1 :: (h2 :: t as t') ->
+          if n = 100 then acc ^ "..." (* stop printing long list *)
+          else loop (n + 1) (acc ^ pp_elt h1 ^ demarc) t'
+    in
+    loop 0 "" lst
+  in
+  "[" ^ pp_elts lst ^ "]"
+
+let time_pp = function
+  | Short -> "short"
+  | Regular -> "regular"
+  | Long -> "long"
+
+let sociability_pp = function
+  | Low -> "low"
+  | Medium -> "medium"
+  | High -> "high"
+
+let mask_pp = function Masked -> "masked" | Not_masked -> "no mask"
+
+let vaccine_pp = function Two_or_more -> 2 | One -> 1 | Zero -> 0
+
+let edge_pp (e : edge) =
+  Printf.sprintf "id: %i, edge_info: %s" (fst e)
+    (Printf.sprintf "(distance: %F, risk: %s)" (snd e).distance
+       (time_pp (snd e).time))
+
+let neighbor_pp = pp_list edge_pp "; "
+
+let infected_pp = function
+  | Infected -> "infected"
+  | Not_infected -> "not infected"
+
+let position_printer (pos : position) =
+  Printf.sprintf "(%i, %i)" (List.hd pos) (List.hd (List.tl pos))
+
+let attr_printer (a : attr) =
+  Printf.sprintf
+    "Status: %s; mask: %s; sociability: %s; vaccine doses: %i; \
+     position: %s;"
+    (infected_pp a.infected)
+    (mask_pp a.mask)
+    (sociability_pp a.sociability)
+    (vaccine_pp a.vaccine_doses)
+    (position_printer a.position)
+
+let person_printer (p : person) =
+  Printf.sprintf "%s %s"
+    (attr_printer p.attributes)
+    (neighbor_pp p.neighbors)
+
+let graph_tuple_printer (id, pers) =
+  Printf.sprintf "id: %i; %s" id (person_printer pers)
+
+let graph_printer (net : t) =
+  pp_list graph_tuple_printer ";\n" net.network ^ "\n"
+
+let pop_parameters net = net.population
+
+let virus_info net = net.virus

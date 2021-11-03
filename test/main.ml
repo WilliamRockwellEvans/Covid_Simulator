@@ -19,27 +19,26 @@ let cmp_set_like_lists lst1 lst2 =
   && List.length lst2 = List.length uniq2
   && uniq1 = uniq2
 
-(** [pp_list pp_elt lst] pretty-prints list [lst], using [pp_elt] to
-    pretty-print each element of [lst]. *)
-let pp_list pp_elt lst =
+(**[get_net_rep filepath] parses the json file at [filepath] into
+   Network.t*)
+let get_net_rep filepath : Network.t =
+  Yojson.Basic.from_file filepath |> from_json
+
+(** [pp_list pp_elt demarc lst] pretty-prints list [lst], using [pp_elt]
+    to pretty-print each element of [lst], and using demarcation
+    [demarc] to separate elements. *)
+let pp_list pp_elt demarc lst =
   let pp_elts lst =
     let rec loop n acc = function
       | [] -> acc
       | [ h ] -> acc ^ pp_elt h
       | h1 :: (h2 :: t as t') ->
           if n = 100 then acc ^ "..." (* stop printing long list *)
-          else loop (n + 1) (acc ^ pp_elt h1 ^ "; ") t'
+          else loop (n + 1) (acc ^ pp_elt h1 ^ demarc) t'
     in
     loop 0 "" lst
   in
   "[" ^ pp_elts lst ^ "]"
-
-(** [pp_network net] pretty-prints network [net]*)
-
-(**[get_net_rep filepath] parses the json file at [filepath] into
-   Network.t*)
-let get_net_rep filepath : Network.t =
-  Yojson.Basic.from_file filepath |> from_json
 
 (******************************************************************************
   End Helper Functions.
@@ -49,8 +48,9 @@ let state_test
     (name : string)
     (state_in : State.t)
     (expected_output : State.t) : test =
-  name >:: fun _ -> assert_equal expected_output (update_state state_in)
-(* ~printer *)
+  name >:: fun _ ->
+  assert_equal expected_output (update_state state_in)
+    ~printer:Network.graph_printer
 
 (** [head_test name net expected_output] constructs an OUnit test named
     [name] that asserts the quality of [expected_output] with
@@ -84,32 +84,57 @@ let edge_information_test name net id1 id2 expected_output : test =
   assert_equal expected_output (edge_information net id1 id2)
 
 (******************************************************************************
-  End test constructors.
-  Start Initialize Testing Variables
- ******************************************************************************)
+  End test constructors. Start Initialize Testing Variables
+  ******************************************************************************)
 
-let net1 = get_net_rep "data/basic_network.json"
+let net1 = get_net_rep "data/5_person_network.json"
 
 let attr1 =
   {
     infected = Not_infected;
-    mask = "Yes";
-    immunity = 0.0;
+    mask = Masked;
+    sociability = High;
+    vaccine_doses = Zero;
     position = [ 1; 2 ];
   }
 
 let attr2 =
   {
     infected = Infected;
-    mask = "No";
-    immunity = 0.0;
+    sociability = Medium;
+    mask = Not_masked;
+    vaccine_doses = Two_or_more;
     position = [ 2; 4 ];
   }
 
-let edge_info12 = { distance = 3.5; risk = "high" }
+let attr5 =
+  {
+    infected = Not_infected;
+    sociability = Medium;
+    vaccine_doses = Two_or_more;
+    mask = Masked;
+    position = [ 1; 6 ];
+  }
 
-let edge_info13 = { distance = 2.0; risk = "low" }
+let edge_info12 = { distance = 3.5; time = Short }
 
+let edge_info13 = { distance = 2.0; time = Regular }
+
+let edge_info25 = { distance = 0.5; time = Long }
+
+let pop = { location = Indoors; density = High_density }
+
+let virus =
+  {
+    name = "SARS-CoV-2";
+    incubation_time = Days 5;
+    mortality_rate = 0.02;
+  }
+
+(******************************************************************************
+  End Initialize Testing Variables.
+  Start tests.  
+ ******************************************************************************)
 let network_tests =
   [
     head_test {| head of net1 is 1|} net1 1;
@@ -176,8 +201,17 @@ let basic_before = get_net_rep "data/basic_network.json"
 
 let basic_after = get_net_rep "data/basic_network_stepped.json"
 
+let five_before = get_net_rep "data/5_person_network.json"
+
+let five_after = get_net_rep "data/5_person_network_stepped.json"
+
 let state_tests =
   [
+    state_test
+      "5_person_network.json stepped forward is \
+       5_person_network_sptted.json, assuming infection prob is \
+       identically 1 "
+      five_before five_after;
     state_test
       "basic_network.json stepped forward is\n\
       \   basic_network_stepped.json, assuming infection prob is  \
