@@ -147,3 +147,50 @@ let create_graph net =
   in
   let nlist = List.map pi' idlist in
   { nodes = nlist; edges }
+
+(** [pp_list pp_elt demarc lst] pretty-prints list [lst], using [pp_elt]
+    to pretty-print each element of [lst], and using demarcation
+    [demarc] to separate elements. *)
+let pp_list pp_elt demarc lst =
+  let pp_elts lst =
+    let rec loop n acc = function
+      | [] -> acc
+      | [ h ] -> acc ^ pp_elt h
+      | h1 :: (h2 :: t as t') ->
+          if n = 100 then acc ^ "..." (* stop printing long list *)
+          else loop (n + 1) (acc ^ pp_elt h1 ^ demarc) t'
+    in
+    loop 0 "" lst
+  in
+  "[" ^ pp_elts lst ^ "]"
+
+let edge_printer (e : edge) =
+  Printf.sprintf "id: %i, edge_info: %s" (fst e)
+    (Printf.sprintf "(distance: %F, risk: %s)" (snd e).distance
+       (snd e).risk)
+
+let neighbor_printer = pp_list edge_printer "; "
+
+let infected_printer = function
+  | Infected -> "infected"
+  | Not_infected -> "not infected"
+
+let position_printer (pos : position) =
+  Printf.sprintf "(%i, %i)" (List.hd pos) (List.hd (List.tl pos))
+
+let attr_printer (a : attr) =
+  Printf.sprintf "Status: %s; mask: %s; immunity: %F; position: %s;"
+    (infected_printer a.infected)
+    a.mask a.immunity
+    (position_printer a.position)
+
+let person_printer (p : person) =
+  Printf.sprintf "%s %s"
+    (attr_printer p.attributes)
+    (neighbor_printer p.neighbors)
+
+let graph_tuple_printer (id, pers) =
+  Printf.sprintf "id: %i; %s" id (person_printer pers)
+
+let graph_printer (net : t) =
+  pp_list graph_tuple_printer ";\n" net ^ "\n"

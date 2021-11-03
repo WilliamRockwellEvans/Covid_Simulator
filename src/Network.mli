@@ -114,3 +114,6 @@ val edge_information : t -> person_id -> person_id -> edge_info
 val create_graph : t -> graph
 (** [create_graph net] is the graph type representation of the network
     net to bet used in the GUI *)
+
+val graph_printer : t -> string
+(** [graph_printer net] pretty prints [net]*)

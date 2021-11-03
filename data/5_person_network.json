@@ -24,7 +24,7 @@
     },
     {
       "id": 2,
-      "infected": "Yes",
+      "infected": "No",
       "immunity": 0.0,
       "mask": "No",
       "position": [
@@ -85,11 +85,6 @@
           "person_id": 2,
           "distance": 3.0,
           "risk": "low"
-        },
-        {
-          "person_id": 2,
-          "distance": 2.0,
-          "risk": "high"
         }
       ]
     },
