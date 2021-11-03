@@ -94,8 +94,9 @@ module Gui = struct
         ((100 * x1, 100 * y1), (100 * x2, 100 * y2))
     | _ -> failwith "bad"
 
+  let unpackage_graph file = file |> Yojson.Basic.from_file  |> from_json
   let graph_of_json file =
-    file |> Yojson.Basic.from_file |> from_json |> create_graph
+    file |> unpackage_graph |> create_graph
 
   let nodes_of_graph g = g.nodes
 
@@ -109,7 +110,29 @@ module Gui = struct
     Graphics.moveto (x_tot / 2) (8 * y_tot / 9);
     Graphics.draw_string title;
     Graphics.moveto a b
+
+  let rec time_update t graph = 
+    match t with 
+    | i when i = 0 -> graph 
+    | j -> time_update (t-1) (State.update_state graph)
+
+  let get_time c = 
+    match c with 
+    | '0' -> 0 
+    | '1' -> 1
+    | '2' -> 2 
+    | '3' -> 3
+    | '4' -> 4 
+    | '5' -> 5
+    | '6' -> 6 
+    | '7' -> 7
+    | '8' -> 8
+    | '9' -> 9 
+    | _ -> failwith "Should not occur"
+
 end
+
+let g = Gui.unpackage_graph "data/basic_network_stepped.json"
 
 let stepped_graph =
   "data/basic_network_stepped.json" |> Gui.graph_of_json
@@ -123,4 +146,10 @@ let edges =
 let () = Graphics.open_graph " 700x700";;
 
 Gui.get_person_net ppl edges;
-Gui.write_title ()
+Gui.write_title ();
+
+let time = Graphics.read_key () in 
+
+let _ = Gui.time_update (time |> Gui.get_time) g in 
+
+Graphics.close_graph ();
