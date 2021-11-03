@@ -146,9 +146,9 @@ let string_to_density = function
    input" if [s] does not correspond to a incubation_time type.*)
 let string_to_incubation_time = function
   | s when String.sub s 2 (String.length s - 2) = "days" ->
-      Days (int_of_char s.[0])
+      Days (int_of_string (String.sub s 0 1))
   | s when String.sub s 2 (String.length s - 2) = "weeks" ->
-      Weeks (int_of_char s.[0])
+      Weeks (int_of_string (String.sub s 0 1))
   | s -> raise InvalidJSON
 
 (**string_to_location [s] is conversion of [s] to its corresponding
