@@ -1,10 +1,20 @@
 {
+  "population parameters": {
+    "location": "indoors",
+    "density": "high"
+  },
+  "virus information": {
+    "virus name": "SARS-CoV-2",
+    "incubation time": "5 days",
+    "mortality rate": 0.02
+  },
   "people": [
     {
       "id": 1,
-      "infected": "Yes",
-      "immunity": 0.0,
-      "mask": "Yes",
+      "infected": "yes",
+      "sociability": "high",
+      "vaccine doses": 0,
+      "mask": "yes",
       "position": [
         1,
         2
@@ -13,20 +23,21 @@
         {
           "person_id": 2,
           "distance": 3.5,
-          "risk": "high"
+          "interaction time": "short"
         },
         {
           "person_id": 3,
           "distance": 2.0,
-          "risk": "low"
+          "interaction time": "regular"
         }
       ]
     },
     {
       "id": 2,
-      "infected": "Yes",
-      "immunity": 0.0,
-      "mask": "No",
+      "infected": "yes",
+      "sociability": "medium",
+      "vaccine doses": 2,
+      "mask": "no",
       "position": [
         2,
         4
@@ -35,25 +46,26 @@
         {
           "person_id": 1,
           "distance": 3.5,
-          "risk": "high"
+          "interaction time": "short"
         },
         {
           "person_id": 4,
           "distance": 3.0,
-          "risk": "low"
+          "interaction time": "regular"
         },
         {
           "person_id": 5,
           "distance": 0.5,
-          "risk": "low"
+          "interaction time": "long"
         }
       ]
     },
     {
       "id": 3,
-      "infected": "Yes",
-      "immunity": 0.0,
-      "mask": "No",
+      "infected": "yes",
+      "sociability": "medium",
+      "vaccine doses": 1,
+      "mask": "no",
       "position": [
         3,
         2
@@ -62,20 +74,21 @@
         {
           "person_id": 1,
           "distance": 2.0,
-          "risk": "low"
+          "interaction time": "regular"
         },
         {
           "person_id": 4,
           "distance": 2.0,
-          "risk": "high"
+          "interaction time": "short"
         }
       ]
     },
     {
       "id": 4,
-      "infected": "Yes",
-      "immunity": 0.5,
-      "mask": "No",
+      "infected": "yes",
+      "sociability": "low",
+      "vaccine doses": 0,
+      "mask": "no",
       "position": [
         5,
         1
@@ -84,15 +97,21 @@
         {
           "person_id": 2,
           "distance": 3.0,
-          "risk": "low"
+          "interaction time": "regular"
+        },
+        {
+          "person_id": 2,
+          "distance": 2.0,
+          "interaction time": "short"
         }
       ]
     },
     {
       "id": 5,
-      "infected": "No",
-      "immunity": 0.4,
-      "mask": "Yes",
+      "infected": "yes",
+      "sociability": "medium",
+      "vaccine doses": 2,
+      "mask": "yes",
       "position": [
         2,
         6
@@ -101,7 +120,7 @@
         {
           "person_id": 2,
           "distance": 0.5,
-          "risk": "low"
+          "interaction time": "long"
         }
       ]
     }
