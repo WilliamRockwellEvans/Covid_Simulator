@@ -94,8 +94,9 @@ module Gui = struct
         ((100 * x1, 100 * y1), (100 * x2, 100 * y2))
     | _ -> failwith "bad"
 
-  let graph_of_json file =
-    file |> Yojson.Basic.from_file |> from_json |> create_graph
+  let unpackage_graph file = file |> Yojson.Basic.from_file |> from_json
+
+  let graph_of_json file = file |> unpackage_graph |> create_graph
 
   let nodes_of_graph g = g.nodes
 
@@ -109,18 +110,52 @@ module Gui = struct
     Graphics.moveto (x_tot / 2) (8 * y_tot / 9);
     Graphics.draw_string title;
     Graphics.moveto a b
+
+  let get_person graph =
+    graph |> nodes_of_graph |> List.map person_of_graph
+
+  let get_edges graph =
+    graph |> edges_of_graph |> List.map edge_of_graph
+
+  let rec time_update t graph =
+    match t with
+    | i when i = 0 -> graph
+    | j ->
+        let updated = graph |> State.update_state in
+        let replacement = create_graph updated in
+        let () =
+          get_person_net
+            (replacement |> get_person)
+            (replacement |> get_edges)
+        in
+        time_update (t - 1) updated
+
+  let isDigitChar c =
+    let i = Char.code c in
+    i - 48 <= 9 && i - 48 >= 0
+
+  let get_time c =
+    if isDigitChar c then Char.code c - 48
+    else failwith "Not a number input"
 end
+
+let g = Gui.unpackage_graph "data/basic_network_stepped.json"
 
 let stepped_graph =
   "data/basic_network_stepped.json" |> Gui.graph_of_json
 
-let ppl =
-  stepped_graph |> Gui.nodes_of_graph |> List.map Gui.person_of_graph
+let ppl = stepped_graph |> Gui.get_person
 
-let edges =
-  stepped_graph |> Gui.edges_of_graph |> List.map Gui.edge_of_graph
+let edges = stepped_graph |> Gui.get_edges
 
 let () = Graphics.open_graph " 700x700";;
 
 Gui.get_person_net ppl edges;
-Gui.write_title ()
+Gui.write_title ();
+
+let time = Graphics.read_key () in
+
+let _ = Gui.time_update (time |> Gui.get_time) g in
+let t2 = Graphics.read_key () in
+
+Graphics.close_graph ()
