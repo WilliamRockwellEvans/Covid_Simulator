@@ -75,21 +75,14 @@ let generate_updates state tracker =
 (* [apply_changes state changes] parses through the graph and applies
    [changes]*)
 let rec apply_changes (state : Network.t) changes =
-  let rec iterate_people net_acc = function
-    | [] -> net_acc
-    | h :: t ->
-        let pers = Network.get_person state h in
-        let new_acc =
-          if NodeMap.mem h changes then
-            Network.add_person net_acc h
-              { pers.attributes with infected = Infected }
-              pers.neighbors
-          else
-            Network.add_person net_acc h pers.attributes pers.neighbors
-        in
-        iterate_people new_acc t
-  in
-  iterate_people Network.empty_network (Network.people state)
+  failwith "Incompleted"
+(* (let rec iterate_people net_acc = function | [] -> net_acc | h :: t
+   -> let pers = Network.get_person state h in let new_acc = if
+   NodeMap.mem h changes then Network.add_person net_acc h {
+   pers.attributes with infected = Infected } pers.neighbors else
+   Network.add_person net_acc h pers.attributes pers.neighbors in
+   iterate_people new_acc t in iterate_people Network.empty_network
+   (Network.people state)) *)
 
 let update_state state =
   generate_updates state (new visitedTracker) |> apply_changes state
