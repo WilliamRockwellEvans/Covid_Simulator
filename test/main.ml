@@ -87,28 +87,54 @@ let edge_information_test name net id1 id2 expected_output : test =
   End test constructors. Start Initialize Testing Variables
   ******************************************************************************)
 
-let net1 = get_net_rep "data/basic_network.json"
+let net1 = get_net_rep "data/5_person_network.json"
 
 let attr1 =
   {
     infected = Not_infected;
-    mask = "Yes";
-    immunity = 0.0;
+    mask = Masked;
+    sociability = High;
+    vaccine_doses = Zero;
     position = [ 1; 2 ];
   }
 
 let attr2 =
   {
     infected = Infected;
-    mask = "No";
-    immunity = 0.0;
+    sociability = Medium;
+    mask = Not_masked;
+    vaccine_doses = Two_or_more;
     position = [ 2; 4 ];
   }
 
-let edge_info12 = { distance = 3.5; risk = "high" }
+let attr5 =
+  {
+    infected = Not_infected;
+    sociability = Medium;
+    vaccine_doses = Two_or_more;
+    mask = Masked;
+    position = [ 1; 6 ];
+  }
 
-let edge_info13 = { distance = 2.0; risk = "low" }
+let edge_info12 = { distance = 3.5; time = Short }
 
+let edge_info13 = { distance = 2.0; time = Regular }
+
+let edge_info25 = { distance = 0.5; time = Long }
+
+let pop = { location = Indoors; density = High_density }
+
+let virus =
+  {
+    name = "SARS-CoV-2";
+    incubation_time = Days 5;
+    mortality_rate = 0.02;
+  }
+
+(******************************************************************************
+  End Initialize Testing Variables.
+  Start tests.  
+ ******************************************************************************)
 let network_tests =
   [
     head_test {| head of net1 is 1|} net1 1;
