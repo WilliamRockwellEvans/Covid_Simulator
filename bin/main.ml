@@ -187,9 +187,9 @@ module Gui = struct
     | Typedefs.One -> "One vaccination completed"
     | Typedefs.Zero -> "No vaccinations taken"
 
-  let move_down_10 () =
-    let x_len, y_len = (Graphics.size_x (), Graphics.size_y ()) in
-    Graphics.moveto (10 * x_len / 11) (10 * y_len / 11)
+  let move_down_50 xpos () =
+    let _, b = Graphics.current_point () in
+    Graphics.moveto xpos (b - 20)
 
   let in_circle x y x_c y_c r =
     ((float x -. float x_c) ** 2.) +. ((float y -. float y_c) ** 2.)
@@ -204,28 +204,58 @@ module Gui = struct
       | h :: t ->
           let x_c, y_c, infection = h in
           if in_circle x y x_c y_c rad then begin
-            print_endline "william";
             (* clicked on this person's node in graph *)
             let graph = g |> create_graph in
             let ppl =
               graph |> nodes_of_graph |> get_person_pos_lst []
+              |> List.map (fun (x, y) -> (100 * x, 100 * y))
             in
             let id = person_id_of_position ppl x_c y_c in
             let attr = Network.get_attributes g id in
 
-            move_down_10 ();
+            Graphics.moveto
+              (Graphics.size_x () - 350)
+              (Graphics.size_y () - 200);
+            let x_pos = Graphics.size_x () - 350 in
+            Graphics.draw_string "Person Node Properties -->";
+
+            move_down_50 x_pos ();
+            Graphics.set_color Graphics.background;
+            let a, b = Graphics.current_point () in
+            Graphics.fill_rect
+              (a + String.length "Infection: ")
+              (b - 5) 400 15;
+            Graphics.set_color Graphics.black;
             attr.infected |> get_infection |> ( ^ ) "Infection: "
             |> Graphics.draw_string;
 
-            move_down_10 ();
+            move_down_50 x_pos ();
+            Graphics.set_color Graphics.background;
+            let a, b = Graphics.current_point () in
+            Graphics.fill_rect
+              (a + String.length "Sociability: ")
+              (b - 5) 400 15;
+            Graphics.set_color Graphics.black;
             attr.sociability |> get_sociability |> ( ^ ) "Sociability: "
             |> Graphics.draw_string;
 
-            move_down_10 ();
+            move_down_50 x_pos ();
+            Graphics.set_color Graphics.background;
+            let a, b = Graphics.current_point () in
+            Graphics.fill_rect
+              (a + String.length "Masked: ")
+              (b - 5) 400 15;
+            Graphics.set_color Graphics.black;
             attr.mask |> get_masked |> ( ^ ) "Masked: "
             |> Graphics.draw_string;
 
-            move_down_10 ();
+            move_down_50 x_pos ();
+            Graphics.set_color Graphics.background;
+            let a, b = Graphics.current_point () in
+            Graphics.fill_rect
+              (a + String.length "Vaccination: ")
+              (b - 5) 400 15;
+            Graphics.set_color Graphics.black;
             attr.vaccine_doses |> get_vaccination
             |> ( ^ ) "Vaccination: " |> Graphics.draw_string
           end
@@ -239,7 +269,7 @@ module Gui = struct
         update_status updated stat
       else ()
     else if stat.button then
-      is_in_node stat (graph |> create_graph |> get_person) 100 graph
+      is_in_node stat (graph |> create_graph |> get_person) 10 graph
     else ()
 end
 
