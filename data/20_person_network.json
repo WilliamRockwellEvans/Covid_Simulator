@@ -1,0 +1,517 @@
+{
+  "population parameters": {
+    "location": "indoors",
+    "density": "high"
+  },
+  "virus information": {
+    "virus name": "SARS-CoV-2",
+    "incubation time": "5 days",
+    "mortality rate": 0.02
+  },
+  "people": [
+    {
+      "id": 1,
+      "infected": "yes",
+      "sociability": "high",
+      "vaccine doses": 0,
+      "mask": "yes",
+      "position": [
+        1,
+        2
+      ],
+      "edges": [
+        {
+          "person_id": 2,
+          "distance": 3.5,
+          "interaction time": "short"
+        },
+        {
+          "person_id": 3,
+          "distance": 2.0,
+          "interaction time": "regular"
+        },
+        {
+          "person_id": 7,
+          "distance": 4.0,
+          "interaction time": "regular"
+        },
+        {
+          "person_id": 16,
+          "distance": 3.0,
+          "interaction time": "long"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "infected": "no",
+      "sociability": "medium",
+      "vaccine doses": 2,
+      "mask": "no",
+      "position": [
+        2,
+        4
+      ],
+      "edges": [
+        {
+          "person_id": 1,
+          "distance": 3.5,
+          "interaction time": "short"
+        },
+        {
+          "person_id": 4,
+          "distance": 3.0,
+          "interaction time": "regular"
+        },
+        {
+          "person_id": 5,
+          "distance": 0.5,
+          "interaction time": "long"
+        },
+        {
+          "person_id": 13,
+          "distance": 2.3,
+          "interaction time": "short"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "infected": "no",
+      "sociability": "medium",
+      "vaccine doses": 1,
+      "mask": "no",
+      "position": [
+        3,
+        2
+      ],
+      "edges": [
+        {
+          "person_id": 1,
+          "distance": 2.0,
+          "interaction time": "regular"
+        },
+        {
+          "person_id": 4,
+          "distance": 2.0,
+          "interaction time": "short"
+        },
+        {
+          "person_id": 13,
+          "distance": 0.9,
+          "interaction time": "regular"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "infected": "no",
+      "sociability": "low",
+      "vaccine doses": 0,
+      "mask": "no",
+      "position": [
+        5,
+        1
+      ],
+      "edges": [
+        {
+          "person_id": 2,
+          "distance": 3.0,
+          "interaction time": "regular"
+        },
+        {
+          "person_id": 3,
+          "distance": 2.0,
+          "interaction time": "short"
+        }
+      ]
+    },
+    {
+      "id": 5,
+      "infected": "no",
+      "sociability": "medium",
+      "vaccine doses": 2,
+      "mask": "yes",
+      "position": [
+        2,
+        6
+      ],
+      "edges": [
+        {
+          "person_id": 2,
+          "distance": 0.5,
+          "interaction time": "long"
+        }
+        ]
+      },
+    {
+      "id": 6,
+      "infected": "no",
+      "sociability": "medium",
+      "vaccine doses": 1,
+      "mask": "yes",
+      "position": [
+        2,
+        8
+      ],
+      "edges": [
+        {
+          "person_id": 8,
+          "distance": 5.0,
+          "interaction time": "short"
+        },
+        {
+          "person_id": 14,
+          "distance": 3.0,
+          "interaction time": "short"
+        }
+      ]
+    },
+    {
+      "id": 7,
+      "infected": "yes",
+      "sociability": "high",
+      "vaccine doses": 0,
+      "mask": "yes",
+      "position": [
+        9,
+        1
+      ],
+      "edges": [
+        {
+          "person_id": 16,
+          "distance": 0.1,
+          "interaction time": "short"
+        },
+        {
+          "person_id": 17,
+          "distance": 1.5,
+          "interaction time": "short"
+        },
+        {
+          "person_id": 11,
+          "distance": 5.0,
+          "interaction time": "regular"
+        },
+        {
+          "person_id": 1,
+          "distance": 4.0,
+          "interaction time": "regular"
+        }
+      ]
+    },
+    {
+      "id": 8,
+      "infected": "no",
+      "sociability": "medium",
+      "vaccine doses": 2,
+      "mask": "yes",
+      "position": [
+        3,
+        4
+      ],
+      "edges": [
+        {
+          "person_id": 6,
+          "distance": 5.0,
+          "interaction time": "short"
+        },
+        {
+          "person_id": 18,
+          "distance": 2.3,
+          "interaction time": "long"
+        }
+      ]
+    },
+    {
+      "id": 9,
+      "infected": "no",
+      "sociability": "high",
+      "vaccine doses": 0,
+      "mask": "no",
+      "position": [
+        7,
+        6
+      ],
+      "edges": [
+        {
+          "person_id": 12,
+          "distance": 5.0,
+          "interaction time": "long"
+        },
+        {
+          "person_id": 13,
+          "distance": 2.0,
+          "interaction time": "regular"
+        }
+      ]
+    },
+    {
+      "id": 10,
+      "infected": "no",
+      "sociability": "medium",
+      "vaccine doses": 2,
+      "mask": "no",
+      "position": [
+        4,
+        4
+      ],
+      "edges": [
+        {
+          "person_id": 19,
+          "distance": 1.0,
+          "interaction time": "long"
+        }
+      ]
+    },
+    {
+      "id": 11,
+      "infected": "no",
+      "sociability": "medium",
+      "vaccine doses": 1,
+      "mask": "no",
+      "position": [
+        6,
+        6
+      ],
+      "edges": [
+        {
+          "person_id": 13,
+          "distance": 0.2,
+          "interaction time": "long"
+        },
+        {
+          "person_id": 7,
+          "distance": 5.0,
+          "interaction time": "regular"
+        },
+        {
+          "person_id": 15,
+          "distance": 3.0,
+          "interaction time": "regular"
+        }
+      ]
+    },
+    {
+      "id": 12,
+      "infected": "no",
+      "sociability": "low",
+      "vaccine doses": 2,
+      "mask": "no",
+      "position": [
+        8,
+        2
+      ],
+      "edges": [
+        {
+          "person_id": 9,
+          "distance": 5.0,
+          "interaction time": "long"
+        }
+      ]
+    },
+    {
+      "id": 13,
+      "infected": "no",
+      "sociability": "high",
+      "vaccine doses": 2,
+      "mask": "no",
+      "position": [
+        7,
+        5
+      ],
+      "edges": [
+        {
+          "person_id": 2,
+          "distance": 2.3,
+          "interaction time": "short"
+        },
+        {
+          "person_id": 18,
+          "distance": 2.9,
+          "interaction time": "regular"
+        },
+        {
+          "person_id": 19,
+          "distance": 1.9,
+          "interaction time": "regular"
+        },
+        {
+          "person_id": 3,
+          "distance": 0.9,
+          "interaction time": "regular"
+        },{
+          "person_id": 9,
+          "distance": 2.0,
+          "interaction time": "regular"
+        }
+      ]
+    },
+    {
+      "id": 14,
+      "infected": "no",
+      "sociability": "medium",
+      "vaccine doses": 1,
+      "mask": "yes",
+      "position": [
+        9,
+        6
+      ],
+      "edges": [
+        {
+          "person_id": 6,
+          "distance": 3.0,
+          "interaction time": "short"
+        },
+        {
+          "person_id": 15,
+          "distance": 4.8,
+          "interaction time": "short"
+        }
+      ]
+    },
+    {
+      "id": 15,
+      "infected": "no",
+      "sociability": "medium",
+      "vaccine doses": 2,
+      "mask": "no",
+      "position": [
+        1,
+        7
+      ],
+      "edges": [
+        {
+          "person_id": 14,
+          "distance": 4.8,
+          "interaction time": "short"
+        },
+        {
+          "person_id": 11,
+          "distance": 3.0,
+          "interaction time": "regular"
+        }
+      ]
+    },
+    {
+      "id": 16,
+      "infected": "no",
+      "sociability": "low",
+      "vaccine doses": 2,
+      "mask": "yes",
+      "position": [
+        9,
+        9
+      ],
+      "edges": [
+        {
+          "person_id": 7,
+          "distance": 0.1,
+          "interaction time": "short"
+        },
+        {
+          "person_id": 1,
+          "distance": 3.0,
+          "interaction time": "long"
+        },
+        {
+          "person_id": 20,
+          "distance": 4.0,
+          "interaction time": "regular"
+        }
+      ]
+    },
+    {
+      "id": 17,
+      "infected": "no",
+      "sociability": "low",
+      "vaccine doses": 0,
+      "mask": "yes",
+      "position": [
+        4,
+        7
+      ],
+      "edges": [
+        {
+          "person_id": 7,
+          "distance": 1.5,
+          "interaction time": "short"
+        }
+      ]
+    },
+    {
+      "id": 18,
+      "infected": "no",
+      "sociability": "high",
+      "vaccine doses": 1,
+      "mask": "yes",
+      "position": [
+        8,
+        4
+      ],
+      "edges": [
+        {
+          "person_id": 13,
+          "distance": 2.9,
+          "interaction time": "regular"
+        },
+        {
+          "person_id": 8,
+          "distance": 2.3,
+          "interaction time": "long"
+        },
+        {
+          "person_id": 19,
+          "distance": 4.5,
+          "interaction time": "long"
+        }
+      ]
+    },
+    {
+      "id": 19,
+      "infected": "no",
+      "sociability": "medium",
+      "vaccine doses": 2,
+      "mask": "no",
+      "position": [
+        6,
+        9
+      ],
+      "edges": [
+        {
+          "person_id": 10,
+          "distance": 1.0,
+          "interaction time": "long"
+        },
+        {
+          "person_id": 13,
+          "distance": 1.9,
+          "interaction time": "regular"
+        },
+        {
+          "person_id": 18,
+          "distance": 4.5,
+          "interaction time": "long"
+        }
+      ]
+    },
+    {
+      "id": 20,
+      "infected": "no",
+      "sociability": "low",
+      "vaccine doses": 2,
+      "mask": "yes",
+      "position": [
+        7,
+        8
+      ],
+      "edges": [
+        {
+          "person_id": 16,
+          "distance": 4.0,
+          "interaction time": "regular"
+        }
+      ]
+    }
+  ]
+}

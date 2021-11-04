@@ -87,12 +87,11 @@ module Gui = struct
     Graphics.moveto a b
 
   let person_of_graph = function
-    | [ x; y ], i -> (100 * x, 100 * y, i)
+    | [ x; y ], i -> (75 * x, 75 * y, i)
     | _ -> failwith "bad"
 
   let edge_of_graph = function
-    | [ x1; y1 ], [ x2; y2 ] ->
-        ((100 * x1, 100 * y1), (100 * x2, 100 * y2))
+    | [ x1; y1 ], [ x2; y2 ] -> ((75 * x1, 75 * y1), (75 * x2, 75 * y2))
     | _ -> failwith "bad"
 
   let unpackage_graph file = file |> Yojson.Basic.from_file |> from_json
@@ -124,6 +123,11 @@ module Gui = struct
     | j ->
         let updated = graph |> State.update_state in
         let replacement = create_graph updated in
+
+        Graphics.set_color Graphics.background;
+        Graphics.fill_rect 0 0 (Graphics.size_x ()) (Graphics.size_y ());
+        Graphics.set_color Graphics.black;
+        write_title ();
         let () =
           get_person_net
             (replacement |> get_person)
@@ -208,7 +212,7 @@ module Gui = struct
             let graph = g |> create_graph in
             let ppl =
               graph |> nodes_of_graph |> get_person_pos_lst []
-              |> List.map (fun (x, y) -> (100 * x, 100 * y))
+              |> List.map (fun (x, y) -> (75 * x, 75 * y))
             in
             let id = person_id_of_position ppl x_c y_c in
             let attr = Network.get_attributes g id in
@@ -261,12 +265,20 @@ module Gui = struct
           end
           else is_in_node status t rad g
 
-  let rec update_status graph stat =
+  let update_status graph stat =
     if stat.keypressed then
       if stat.key |> is_escape_key then Graphics.close_graph ()
-      else if stat.key |> is_digit_char then
-        let updated = time_update (stat.key |> get_time) graph in
-        update_status updated stat
+      else if stat.key |> is_digit_char then (
+        let _ = time_update (stat.key |> get_time) graph in
+        let a1, b1 = Graphics.current_point () in
+        Graphics.moveto (15 * Graphics.size_x () / 20) 50;
+        Graphics.set_color Graphics.background;
+        let a2, b2 = Graphics.current_point () in
+        Graphics.fill_rect a2 (b2 - 5) (Graphics.size_x ()) 15;
+        Graphics.set_color Graphics.black;
+        Graphics.draw_string ("Current Day: " ^ Char.escaped stat.key);
+        Graphics.moveto a1 b1;
+        ())
       else ()
     else if stat.button then
       is_in_node stat (graph |> create_graph |> get_person) 10 graph
@@ -281,15 +293,15 @@ let events =
     Graphics.Poll;
   ]
 
-let g = Gui.unpackage_graph "data/5_person_network.json"
+let g = Gui.unpackage_graph "data/20_person_network.json"
 
-let stepped_graph = "data/5_person_network.json" |> Gui.graph_of_json
+let stepped_graph = "data/20_person_network.json" |> Gui.graph_of_json
 
 let ppl = stepped_graph |> Gui.get_person
 
 let edges = stepped_graph |> Gui.get_edges
 
-let () = Graphics.open_graph " 700x700";;
+let () = Graphics.open_graph " 1000x750";;
 
 Gui.get_person_net ppl edges;
 Gui.write_title ();
