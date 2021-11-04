@@ -78,10 +78,34 @@ let get_attributes_test name net id expected_output : test =
 
 (** [edge_information_test name net id1 id2 expected_output] constructs
     an OUnit test named [name] that asserts the quality of
-    [expected_output] with [get_information net id1 id2]. *)
+    [expected_output] with [edge_information net id1 id2]. *)
 let edge_information_test name net id1 id2 expected_output : test =
   name >:: fun _ ->
   assert_equal expected_output (edge_information net id1 id2)
+
+(** [virus_info_test name net expected_output] constructs an OUnit test
+    named [name] that asserts the quality of [expected_output] with
+    [virus_info net]. *)
+let virus_info_test name net expected_output : test =
+  name >:: fun _ -> assert_equal expected_output (virus_info net)
+
+(** [pop_parameters_test name net expected_output] constructs an OUnit
+    test named [name] that asserts the quality of [expected_output] with
+    [pop_parameters net]. *)
+let pop_parameters_test name net expected_output : test =
+  name >:: fun _ -> assert_equal expected_output (pop_parameters net)
+
+(** [size_test name net expected_output] constructs an OUnit test named
+    [name] that asserts the quality of [expected_output] with
+    [size net]. *)
+let size_test name net expected_outout : test =
+  name >:: fun _ -> assert_equal expected_outout (size net)
+
+(** [fraction_infected_test name net expected_output] constructs an
+    OUnit test named [name] that asserts the quality of
+    [expected_output] with [fraction_infected net]. *)
+let fraction_infected_test name net expected_outout : test =
+  name >:: fun _ -> assert_equal expected_outout (fraction_infected net)
 
 (******************************************************************************
   End test constructors. Start Initialize Testing Variables
@@ -91,7 +115,7 @@ let net1 = get_net_rep "data/5_person_network.json"
 
 let attr1 =
   {
-    infected = Not_infected;
+    infected = Infected;
     mask = Masked;
     sociability = High;
     vaccine_doses = Zero;
@@ -140,8 +164,10 @@ let network_tests =
     head_test {| head of net1 is 1|} net1 1;
     neighbors_test {|neighbors of person 1 in net1 is [2;3]|} net1 1
       [ 2; 3 ];
-    neighbors_test {|neighbors of person 2 in net1 is [1]|} net1 2 [ 1 ];
-    neighbors_test {|neighbors of person 3 in net1 is [1]|} net1 3 [ 1 ];
+    neighbors_test {|neighbors of person 2 in net1 is [1;4;5]|} net1 2
+      [ 1; 4; 5 ];
+    neighbors_test {|neighbors of person 3 in net1 is [1;4]|} net1 3
+      [ 1; 4 ];
     get_position_test "position of person 1 in net1 is [1;2]" net1 1
       [ 1; 2 ];
     get_position_test "position of person 2 in net1 is [2;4]" net1 2
@@ -166,29 +192,41 @@ let network_tests =
       "edge information of edge between person 3 and person 1 in net1 \
        is edge_info12"
       net1 3 1 edge_info13;
+    pop_parameters_test
+      "population_parameters of net1 should be {location = Indoors; \
+       density = High_density}"
+      net1 pop;
+    virus_info_test
+      "virus_info of net1 should be {name = SARS-CoV-2;ncubation_time \
+       = Days 5;\n\
+      \       mortality_rate = 0.02}" net1 virus;
+    size_test "size of net1 should be 5" net1 5;
+    fraction_infected_test
+      "fraction of infected people in net 1 should be 0.6" net1 0.6;
+    (************ Error testing ************)
     ( "neighbors of person 4 in net1 should raise UnknownPerson \
        exception"
     >:: fun _ ->
-      assert_raises (UnknownPerson 4) (fun () -> neighbors net1 4) );
-    ( "get_position of person 4 in net1 should raise UnknownPerson \
+      assert_raises (UnknownPerson 6) (fun () -> neighbors net1 6) );
+    ( "get_position of person 6 in net1 should raise UnknownPerson \
        exception"
     >:: fun _ ->
-      assert_raises (UnknownPerson 4) (fun () -> get_position net1 4) );
-    ( "get_attributes of person 4 in net1 should raise UnknownPerson \
+      assert_raises (UnknownPerson 6) (fun () -> get_position net1 6) );
+    ( "get_attributes of person 6 in net1 should raise UnknownPerson \
        exception"
     >:: fun _ ->
-      assert_raises (UnknownPerson 4) (fun () -> get_attributes net1 4)
+      assert_raises (UnknownPerson 6) (fun () -> get_attributes net1 6)
     );
-    ( "edge_information of person 1 and person 4 in net1 should raise \
+    ( "edge_information of person 1 and person 6 in net1 should raise \
        UnknownPerson exception"
     >:: fun _ ->
-      assert_raises (UnknownPerson 4) (fun () ->
-          edge_information net1 1 4) );
-    ( "edge_information of person 4 and person 5 in net1 should raise \
+      assert_raises (UnknownPerson 6) (fun () ->
+          edge_information net1 1 6) );
+    ( "edge_information of person 6 and person 7 in net1 should raise \
        UnknownPerson exception"
     >:: fun _ ->
-      assert_raises (UnknownPerson 4) (fun () ->
-          edge_information net1 4 5) );
+      assert_raises (UnknownPerson 6) (fun () ->
+          edge_information net1 6 7) );
     ( "edge_information of person 2 and person 3 in net1 should raise \
        UnknownEdge exception"
     >:: fun _ ->
@@ -197,30 +235,21 @@ let network_tests =
         (fun () -> edge_information net1 2 3) );
   ]
 
-let basic_before = get_net_rep "data/basic_network.json"
+(* let basic_before = get_net_rep "data/basic_network.json"
 
-let basic_after = get_net_rep "data/basic_network_stepped.json"
+   let basic_after = get_net_rep "data/basic_network_stepped.json"
 
-let five_before = get_net_rep "data/5_person_network.json"
+   let five_before = get_net_rep "data/5_person_network.json"
 
-let five_after = get_net_rep "data/5_person_network_stepped.json"
+   let five_after = get_net_rep "data/5_person_network_stepped.json"
 
-let state_tests =
-  [
-    state_test
-      "5_person_network.json stepped forward is \
-       5_person_network_sptted.json, assuming infection prob is \
-       identically 1 "
-      five_before five_after;
-    state_test
-      "basic_network.json stepped forward is\n\
-      \   basic_network_stepped.json, assuming infection prob is  \
-       identically\n\
-      \  1" basic_before basic_after;
-  ]
-
+   let state_tests = [ state_test "5_person_network.json stepped forward
+   is \ 5_person_network_sptted.json, assuming infection prob is \
+   identically 1 " five_before five_after; state_test
+   "basic_network.json stepped forward is\n\ \
+   basic_network_stepped.json, assuming infection prob is \
+   identically\n\ \ 1" basic_before basic_after; ] *)
 let suite =
-  "test suit for Covid_Simulator"
-  >::: List.flatten [ network_tests; state_tests ]
+  "test suit for Covid_Simulator" >::: List.flatten [ network_tests ]
 
 let _ = run_test_tt_main suite

@@ -239,3 +239,79 @@ let graph_printer (net : t) =
 let pop_parameters net = net.population
 
 let virus_info net = net.virus
+
+let size net = List.length net.network
+
+let fraction_infected net =
+  let rec fi_helper = function
+    | [] -> 0
+    | (_, r) :: t -> begin
+        match r.attributes.infected with
+        | Infected -> 1 + fi_helper t
+        | Not_infected -> fi_helper t
+      end
+  in
+  float (fi_helper net.network) /. float (size net)
+
+let transmission_probability net id1 id2 =
+  (*A.F: Transmission_probability uses various internal helper functions
+    that evaluate the effect of all relevant parametets in the network
+    and of the two people interacting in order to output a probability
+    of person id1 being infected by person id2. Note: if id1 is already
+    infected then the probability of infection is 0. R.I: The output is
+    always between 0 and 1. *)
+  let r = fraction_infected net in
+  let dense = function
+    (*Denser population -> higher transmission probability*)
+    | High_density -> 0.9
+    | Med_density -> 0.7
+    | Low_density -> 0.5
+  in
+  let loc (*Indoor location -> higher transmission probability*) =
+    function
+    | Indoors -> 1.
+    | Outdoors -> 0.7
+  in
+  let dist = function
+    (*Closer interaction -> higher transmission probability*)
+    | i when i >= 6. -> 0.2
+    | i when 3. < i && i < 6. -> 0.6
+    | i when 1. <= i && i <= 3. -> 0.95
+    | i when 0. <= i && i < 1. -> 1.
+    | _ -> raise InvalidJSON
+  in
+  let tim (*Longer interaction -> higher transmission probability*) =
+    function
+    | Long -> 1.
+    | Regular -> 0.8
+    | Short -> 0.4
+  in
+  let msk p1 p2 =
+    (* Not wearing masks -> higher transmission probability. Note: if
+       only the infected person is wearing a mask, the probability of
+       transmitting virus is less than if only the non-infected person
+       is wearing a mask*)
+    match p2.mask with
+    | Masked -> begin
+        match p1.mask with Masked -> 0.6 | Not_masked -> 0.7
+      end
+    | Not_masked -> begin
+        match p1.mask with Masked -> 0.9 | Not_masked -> 1.
+      end
+  in
+  let doses p =
+    (*More vaccine doses -> lower probability of infection*)
+    match p.vaccine_doses with
+    | Two_or_more -> 0.2
+    | One -> 0.8
+    | Zero -> 1.
+  in
+  let e = edge_information net id1 id2 in
+  let attr1 = get_attributes net id1 in
+  let attr2 = get_attributes net id2 in
+  (*Use all functions defined above to calculate transmission
+    probability*)
+  dense net.population.density
+  *. loc net.population.location
+  *. r *. dist e.distance *. tim e.time *. msk attr1 attr2
+  *. doses attr1

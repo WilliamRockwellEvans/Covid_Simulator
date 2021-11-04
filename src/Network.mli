@@ -124,3 +124,17 @@ val virus_info : t -> virus
 
 val empty_network : population -> virus -> t
 (** [empty_network pop virus] is an empty network with [pop] and [virus]*)
+
+val size : t -> int
+(** [size net] is the number of people in the network*)
+
+val fraction_infected : t -> float
+(** [fraction_infected net] is the fraction of people infected in the
+    network *)
+
+val transmission_probability : t -> person_id -> person_id -> float
+(** [transmission_probability net id1 id2] is the probability of virus
+    transmission between person [id1] and person [id2] in network [net].
+    Requires:id2 must already be infected, [id1], [id2] are people in
+    the network. Raises [UnknowEdge (id1,id2)] if an edge between [id1]
+    and [id2] does not exist.*)
