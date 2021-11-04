@@ -198,7 +198,7 @@ module Gui = struct
     match t with
     | i when i = 0 -> graph
     | j ->
-        let updated = graph |> State.update_state in
+        let updated = graph |> Network.update_state in
         let replacement = create_graph updated in
 
         Graphics.set_color Graphics.background;
