@@ -1,6 +1,7 @@
 open Graphics
 open Covid
 open Network
+open Typedefs
 
 module Gui = struct
   let from_rgb (c : Graphics.color) =

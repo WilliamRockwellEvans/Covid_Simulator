@@ -1,3 +1,4 @@
+open Typedefs
 (**Representation of static social network.
 
    This module handles the data stored in a JSON file with the
@@ -10,69 +11,14 @@
 type t
 (** The abstract type of the values representing infection network*)
 
-(******************************************************************************
-  Start Parameter Types.
- ******************************************************************************)
-(********** Individual Parameters **********)
-type sociability =
-  | Low
-  | Medium
-  | High  (**The type of the level of sociability of a person*)
-
-type mask =
-  | Masked
-  | Not_masked  (**The type of the mask of a person*)
-
-type vaccine_doses =
-  | Two_or_more
-  | One
-  | Zero  (**The type of vaccine doses of a person*)
-
-type infected =
-  | Infected
-  | Not_infected  (**The type of the state of infection of a person*)
-
-type interaction_time =
-  | Short
-  | Regular
-  | Long  (**The type of the length of an interaction between nodes *)
-
-(********** Population Parameters **********)
-type location =
-  | Indoors
-  | Outdoors  (**The type of the location of the network*)
-
-type density =
-  | Low_density
-  | Med_density
-  | High_density  (**The type of the population density of the network*)
-
-(********** Virus Parameters **********)
-type incubation_time =
-  | Days of int
-  | Weeks of int
-      (**The type of incudbation time in either units of days or weeks*)
-
-type mortality_rate = float
-(**The type of mortality rate of infected people (between 0 and 1)*)
-
-(******************************************************************************
-  End Parameter Types.
-  ******************************************************************************)
-
 type person_id = int
 (** The type of person identifiers*)
 
-type position = int list
-(** The type of the position in the positive x-y plane. The first value
-    of the list is the x value, the second is the y value. Precondition:
-    position has exactly two elements *)
-
-type line = position * position
+type line = Position.t * Position.t
 (** the type of a line between two points in a grid*)
 
 type graph = {
-  nodes : (position * infected) list;
+  nodes : (Position.t * Infected.t) list;
   edges : line list;
 }
 (** The type of a graph for the network*)
@@ -84,11 +30,11 @@ type edge_info = {
 (** The type of edge information.*)
 
 type attr = {
-  infected : infected;
-  sociability : sociability;
+  infected : Infected.t;
+  sociability : Sociability.t;
   mask : mask;
-  position : position;
-  vaccine_doses : vaccine_doses;
+  position : Position.t;
+  vaccine_doses : Vaccine.t;
 }
 (** The type of individual attributes of person [id]*)
 
@@ -110,12 +56,6 @@ exception UnknownPerson of person_id
 
 exception UnknownEdge of person_id * person_id
 (** Raised when a non-existing edge is encountered*)
-
-exception InvalidJSON
-(** Raised when the input JSON has an invalid form*)
-
-exception InvalidPosition of position
-(** Raised when an illegal position is encountered*)
 
 val from_json : Yojson.Basic.t -> t
 (** [from_json j] is the network that [j] represents. Requires: [j] is a
@@ -151,9 +91,10 @@ val neighbors : t -> person_id -> person_id list
    interaction with in network [net]. Raises [UnknownPerson p] if the
    [p] is not a person in [net]*)
 
-val get_position : t -> person_id -> position
-(** [get_position net p] is the position of person [p] in network [net].
-    Raises [UnknownPerson p] if person [p] does not exist in [net]*)
+val get_position : t -> person_id -> Position.t
+(** [get_position net p] is the Position.t of person [p] in network
+    [net]. Raises [UnknownPerson p] if person [p] does not exist in
+    [net]*)
 
 val get_attributes : t -> person_id -> attr
 (** [get_attributes net p] is the attributes of person [p] in network
