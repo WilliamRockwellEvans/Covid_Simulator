@@ -136,5 +136,9 @@ val transmission_probability : t -> person_id -> person_id -> float
 (** [transmission_probability net id1 id2] is the probability of virus
     transmission between person [id1] and person [id2] in network [net].
     Requires:id2 must already be infected, [id1], [id2] are people in
-    the network. Raises [UnknowEdge (id1,id2)] if an edge between [id1]
+    the network. Raises [UnknownEdge (id1,id2)] if an edge between [id1]
     and [id2] does not exist.*)
+
+val update_state : t -> t
+(** [update_state state] is the infection network generated from [state]
+    after one time. Requires: [state] is a valid infection network*)

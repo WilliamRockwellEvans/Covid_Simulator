@@ -315,3 +315,92 @@ let transmission_probability net id1 id2 =
   *. loc net.population.location
   *. r *. dist e.distance *. tim e.time *. msk attr1 attr2
   *. doses attr1
+
+module PersonKey = struct
+  type t = person_id
+
+  let compare = Stdlib.compare
+end
+
+module NodeSet = Set.Make (PersonKey)
+
+(* [visitedTracker] implements a logger for tracking which nodes have
+   been visited during a graph traversal*)
+class visitedTracker =
+  object (self)
+    val mutable visited = NodeSet.empty (* can i make this private?*)
+
+    (* [add_visit n] updates tracker with the fact that node [n] has
+       been visited *)
+    method add_visit n = visited <- NodeSet.add n visited
+
+    (* [was_visited n] is if node [n] has been visited before*)
+    method was_visited (n : person_id) : bool = NodeSet.mem n visited
+
+    (* [clear] deletes all entries from the tracker *)
+    method clear = visited <- NodeSet.empty
+  end
+
+(* [rand_bool prob] generates [true] with probability [prob], otherwise
+   [false] *)
+let rand_bool prob : bool = Random.float 1. < prob
+
+(* [process_node state n] is if node [n] in state [state] gets infected
+   by its neighbors *)
+let process_node state (n : person_id) =
+  let rec lst_itr acc = function
+    | h :: t -> lst_itr (transmission_probability state n h :: acc) t
+    | [] -> acc
+  in
+  lst_itr []
+    (neighbors state n
+    |> List.filter (fun neighbor ->
+           (get_attributes state neighbor).infected = Infected))
+  |> List.map rand_bool
+  |> List.exists (fun x -> x)
+
+(* [generate_updates state tracker] is a map of people in state who get
+   infected*)
+let generate_updates state tracker =
+  let rec generate_rec (node : person_id) inf_acc =
+    tracker#add_visit node;
+    let new_inf_acc =
+      if process_node state node then NodeSet.add node inf_acc
+      else inf_acc
+    in
+    let rec lst_itr = function
+      | [] -> new_inf_acc
+      | h :: t ->
+          if tracker#was_visited h then lst_itr t
+          else NodeSet.union (generate_rec h new_inf_acc) (lst_itr t)
+    in
+    lst_itr (neighbors state node)
+  in
+  generate_rec (head state) NodeSet.empty
+
+(* [apply_changes state changes] parses through the graph and applies
+   [changes]*)
+let rec apply_changes (state : t) changes =
+  let rec iterate_people net_acc = function
+    | [] -> net_acc
+    | h :: t ->
+        let pers = get_person state h in
+        let new_person =
+          if NodeSet.mem h changes then
+            {
+              pers with
+              attributes = { pers.attributes with infected = Infected };
+            }
+          else pers
+        in
+        iterate_people
+          (add_person net_acc h new_person.attributes
+             new_person.neighbors)
+          t
+  in
+  iterate_people
+    (empty_network (pop_parameters state) (virus_info state))
+    (people state)
+
+let update_state state =
+  generate_updates state (new visitedTracker) |> apply_changes state

@@ -1,7 +1,6 @@
 open OUnit2
 open Covid
 open Network
-open State
 
 (******************************************************************************
   Start Helper Functions.
@@ -46,8 +45,8 @@ let pp_list pp_elt demarc lst =
  ******************************************************************************)
 let state_test
     (name : string)
-    (state_in : State.t)
-    (expected_output : State.t) : test =
+    (state_in : Network.t)
+    (expected_output : Network.t) : test =
   name >:: fun _ ->
   assert_equal expected_output (update_state state_in)
     ~printer:Network.graph_printer
@@ -237,19 +236,25 @@ let network_tests =
 
 (* let basic_before = get_net_rep "data/basic_network.json"
 
-   let basic_after = get_net_rep "data/basic_network_stepped.json"
+   let basic_after = get_net_rep "data/basic_network_stepped.json" *)
+let five_before = get_net_rep "data/5_person_network.json"
 
-   let five_before = get_net_rep "data/5_person_network.json"
+let five_after = get_net_rep "data/5_person_network_stepped.json"
 
-   let five_after = get_net_rep "data/5_person_network_stepped.json"
+let state_tests =
+  [
+    state_test
+      "5_person_network.json stepped forward\n\
+      \   is  5_person_network_sptted.json, assuming infection prob is \
+       identically 1 "
+      five_before five_after;
+    (* state_test "basic_network.json stepped forward is\n\ \
+       basic_network_stepped.json, assuming infection prob is \
+       identically\n\ \ 1" basic_before basic_after; *)
+  ]
 
-   let state_tests = [ state_test "5_person_network.json stepped forward
-   is \ 5_person_network_sptted.json, assuming infection prob is \
-   identically 1 " five_before five_after; state_test
-   "basic_network.json stepped forward is\n\ \
-   basic_network_stepped.json, assuming infection prob is \
-   identically\n\ \ 1" basic_before basic_after; ] *)
 let suite =
-  "test suit for Covid_Simulator" >::: List.flatten [ network_tests ]
+  "test suit for Covid_Simulator"
+  >::: List.flatten [ network_tests; state_tests ]
 
 let _ = run_test_tt_main suite
