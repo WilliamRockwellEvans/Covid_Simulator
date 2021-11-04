@@ -170,22 +170,22 @@ module Gui = struct
     person_id_of_positionAUX x y 1 person_lst
 
   let get_infection = function
-    | Network.Infected -> "Infected"
-    | Network.Not_infected -> "Not Infected"
+    | Typedefs.Infected -> "Infected"
+    | Typedefs.Not_infected -> "Not Infected"
 
   let get_sociability = function
-    | Network.Low -> "Low"
-    | Network.High -> "High"
-    | Network.Medium -> "Medium"
+    | Typedefs.Low -> "Low"
+    | Typedefs.High -> "High"
+    | Typedefs.Medium -> "Medium"
 
   let get_masked = function
-    | Network.Masked -> "Masked"
-    | Network.Not_masked -> "Not Masked"
+    | Typedefs.Masked -> "Masked"
+    | Typedefs.Not_masked -> "Not Masked"
 
   let get_vaccination = function
-    | Network.Two_or_more -> "Completed both vaccinations"
-    | Network.One -> "One vaccination completed"
-    | Network.Zero -> "No vaccinations taken"
+    | Typedefs.Two_or_more -> "Completed both vaccinations"
+    | Typedefs.One -> "One vaccination completed"
+    | Typedefs.Zero -> "No vaccinations taken"
 
   let move_down_10 () =
     let x_len, y_len = (Graphics.size_x (), Graphics.size_y ()) in
@@ -204,6 +204,7 @@ module Gui = struct
       | h :: t ->
           let x_c, y_c, infection = h in
           if in_circle x y x_c y_c rad then begin
+            print_endline "william";
             (* clicked on this person's node in graph *)
             let graph = g |> create_graph in
             let ppl =
@@ -236,8 +237,10 @@ module Gui = struct
       else if stat.key |> is_digit_char then
         let updated = time_update (stat.key |> get_time) graph in
         update_status updated stat
-      else if stat.button then
-        is_in_node stat (graph |> create_graph |> get_person) 100 graph
+      else ()
+    else if stat.button then
+      is_in_node stat (graph |> create_graph |> get_person) 100 graph
+    else ()
 end
 
 let events =
@@ -248,10 +251,9 @@ let events =
     Graphics.Poll;
   ]
 
-let g = Gui.unpackage_graph "data/basic_network_stepped.json"
+let g = Gui.unpackage_graph "data/5_person_network.json"
 
-let stepped_graph =
-  "data/basic_network_stepped.json" |> Gui.graph_of_json
+let stepped_graph = "data/5_person_network.json" |> Gui.graph_of_json
 
 let ppl = stepped_graph |> Gui.get_person
 
