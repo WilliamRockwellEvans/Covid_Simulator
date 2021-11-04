@@ -253,7 +253,9 @@ let fraction_infected net =
   in
   float (fi_helper net.network) /. float (size net)
 
-let transmission_probability net id1 id2 =
+let transmission_probability net id1 id2 = 1.
+
+let transmission_probability_real net id1 id2 =
   (*A.F: Transmission_probability uses various internal helper functions
     that evaluate the effect of all relevant parametets in the network
     and of the two people interacting in order to output a probability
