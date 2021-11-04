@@ -10,6 +10,8 @@ In your terminal run the following commands:
 
 Still in terminal, in the directory where the zip file has been unzipped, 
 run the following commands:
-  run dune build 
-  run make play 
+  dune build 
+  make play 
 
+To use the GUI, press numbers between 1 and 9 to see the network at that day. 
+Click on nodes to see more information. Press escape key (esc) to close the GUI.
