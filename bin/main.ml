@@ -102,38 +102,11 @@ module Gui = struct
 
   let edges_of_graph g = g.edges
 
-  let write_title () =
-    let a, b = Graphics.current_point () in
-    let x_tot = Graphics.size_x () in
-    let y_tot = Graphics.size_y () in
-    let title = "Covid Network" in
-    Graphics.moveto (x_tot / 2) (8 * y_tot / 9);
-    Graphics.draw_string title;
-    Graphics.moveto a b
-
   let get_person graph =
     graph |> nodes_of_graph |> List.map person_of_graph
 
   let get_edges graph =
     graph |> edges_of_graph |> List.map edge_of_graph
-
-  let rec time_update t graph =
-    match t with
-    | i when i = 0 -> graph
-    | j ->
-        let updated = graph |> State.update_state in
-        let replacement = create_graph updated in
-
-        Graphics.set_color Graphics.background;
-        Graphics.fill_rect 0 0 (Graphics.size_x ()) (Graphics.size_y ());
-        Graphics.set_color Graphics.black;
-        write_title ();
-        let () =
-          get_person_net
-            (replacement |> get_person)
-            (replacement |> get_edges)
-        in
-        time_update (t - 1) updated
 
   let is_digit_char c =
     let i = Char.code c in
@@ -191,9 +164,53 @@ module Gui = struct
     | Typedefs.One -> "One vaccination completed"
     | Typedefs.Zero -> "No vaccinations taken"
 
+  let get_location = function
+    | Typedefs.Indoors -> "Indoors"
+    | Typedefs.Outdoors -> "Outdoors"
+
+  let get_density = function
+    | Typedefs.Low_density -> "Low Density"
+    | Typedefs.Med_density -> "Medium Density"
+    | Typedefs.High_density -> "High Density"
+
   let move_down_50 xpos () =
     let _, b = Graphics.current_point () in
     Graphics.moveto xpos (b - 20)
+
+  let write_title g () =
+    let a, b = Graphics.current_point () in
+    let x_tot, y_tot = (Graphics.size_x (), Graphics.size_y ()) in
+    let x_pos = 20 in
+    let pop_params = Network.pop_parameters g in
+    let v_info = Network.virus_info g in
+    Graphics.moveto x_pos (10 * y_tot / 11);
+    Graphics.draw_string ("Virus: " ^ v_info.name);
+    move_down_50 x_pos ();
+    Graphics.draw_string
+      ("Location: " ^ (pop_params.location |> get_location));
+    move_down_50 x_pos ();
+    Graphics.draw_string
+      ("Density: " ^ (pop_params.density |> get_density));
+
+    Graphics.moveto a b
+
+  let rec time_update t graph =
+    match t with
+    | i when i = 0 -> graph
+    | j ->
+        let updated = graph |> State.update_state in
+        let replacement = create_graph updated in
+
+        Graphics.set_color Graphics.background;
+        Graphics.fill_rect 0 0 (Graphics.size_x ()) (Graphics.size_y ());
+        Graphics.set_color Graphics.black;
+        write_title graph ();
+        let () =
+          get_person_net
+            (replacement |> get_person)
+            (replacement |> get_edges)
+        in
+        time_update (t - 1) updated
 
   let in_circle x y x_c y_c r =
     ((float x -. float x_c) ** 2.) +. ((float y -. float y_c) ** 2.)
@@ -221,7 +238,11 @@ module Gui = struct
               (Graphics.size_x () - 350)
               (Graphics.size_y () - 200);
             let x_pos = Graphics.size_x () - 350 in
-            Graphics.draw_string "Person Node Properties -->";
+            Graphics.set_color Graphics.background;
+            let a3, b3 = Graphics.current_point () in
+            Graphics.fill_rect a3 (b3 - 5) 400 15;
+            Graphics.set_color Graphics.black;
+            Graphics.draw_string "Person Node Properties";
 
             move_down_50 x_pos ();
             Graphics.set_color Graphics.background;
@@ -304,7 +325,8 @@ let edges = stepped_graph |> Gui.get_edges
 let () = Graphics.open_graph " 1000x750";;
 
 Gui.get_person_net ppl edges;
-Gui.write_title ();
+
+Gui.write_title g ();
 
 let _ = Graphics.loop_at_exit events (Gui.update_status g) in
 
