@@ -130,32 +130,122 @@ module Gui = struct
         in
         time_update (t - 1) updated
 
-  let isDigitChar c =
+  let is_digit_char c =
     let i = Char.code c in
     i - 48 <= 9 && i - 48 >= 0
 
   let get_time c =
-    if isDigitChar c then Char.code c - 48
+    if is_digit_char c then Char.code c - 48
     else failwith "Not a number input"
 
-  let is_escape_key c = c |> Char.code |> (fun x -> x = 27)
+  let is_escape_key c = c |> Char.code |> fun x -> x = 27
 
-  let rec update_status graph stat = 
-    if stat.keypressed then 
-      begin 
-      if stat.key |> is_escape_key then Graphics.close_graph ()
-      else 
-        if stat.key |> isDigitChar then 
-        let updated = time_update (stat.key |> get_time) graph in 
-        update_status updated stat;
-      else () ;
-    end
+  let is_on_gui x y =
+    x < Graphics.size_x () && x >= 0 && y < Graphics.size_y () && y >= 0
+
+  let get_person_click status =
+    let x, y = (status.mouse_x, status.mouse_y) in
+    if is_on_gui x y then (x, y) else (~-1, ~-1)
+
+  let extract_pos i =
+    match i with
+    | [ x_p; y_p ], infected -> (x_p, y_p)
+    | _ -> failwith "Should not happen"
+
+  let rec get_person_pos_lst acc = function
+    | [] -> List.rev acc
+    | h :: t ->
+        let x, y = extract_pos h in
+        get_person_pos_lst ((x, y) :: acc) t
+
+  let rec person_id_of_positionAUX x y acc_id = function
+    | [] -> failwith "Should not happen"
+    | h :: t ->
+        let x_p, y_p = h in
+        if (x_p, y_p) = (x, y) then acc_id
+        else person_id_of_positionAUX x y (acc_id + 1) t
+
+  let rec person_id_of_position person_lst x y =
+    person_id_of_positionAUX x y 1 person_lst
+
+  let get_infection = function
+    | Network.Infected -> "Infected"
+    | Network.Not_infected -> "Not Infected"
+
+  let get_sociability = function
+    | Network.Low -> "Low"
+    | Network.High -> "High"
+    | Network.Medium -> "Medium"
+
+  let get_masked = function
+    | Network.Masked -> "Masked"
+    | Network.Not_masked -> "Not Masked"
+
+  let get_vaccination = function
+    | Network.Two_or_more -> "Completed both vaccinations"
+    | Network.One -> "One vaccination completed"
+    | Network.Zero -> "No vaccinations taken"
+
+  let move_down_10 () =
+    let x_len, y_len = (Graphics.size_x (), Graphics.size_y ()) in
+    Graphics.moveto (10 * x_len / 11) (10 * y_len / 11)
+
+  let in_circle x y x_c y_c r =
+    ((float x -. float x_c) ** 2.) +. ((float y -. float y_c) ** 2.)
+    <= float r ** 2.
+
+  let rec is_in_node status people rad g =
+    let x, y = get_person_click status in
+    if (x, y) = (~-1, ~-1) then ()
     else
-      () ;
+      match people with
+      | [] -> ()
+      | h :: t ->
+          let x_c, y_c, infection = h in
+          if in_circle x y x_c y_c rad then begin
+            (* clicked on this person's node in graph *)
+            let graph = g |> create_graph in
+            let ppl =
+              graph |> nodes_of_graph |> get_person_pos_lst []
+            in
+            let id = person_id_of_position ppl x_c y_c in
+            let attr = Network.get_attributes g id in
 
+            move_down_10 ();
+            attr.infected |> get_infection |> ( ^ ) "Infection: "
+            |> Graphics.draw_string;
+
+            move_down_10 ();
+            attr.sociability |> get_sociability |> ( ^ ) "Sociability: "
+            |> Graphics.draw_string;
+
+            move_down_10 ();
+            attr.mask |> get_masked |> ( ^ ) "Masked: "
+            |> Graphics.draw_string;
+
+            move_down_10 ();
+            attr.vaccine_doses |> get_vaccination
+            |> ( ^ ) "Vaccination: " |> Graphics.draw_string
+          end
+          else is_in_node status t rad g
+
+  let rec update_status graph stat =
+    if stat.keypressed then
+      if stat.key |> is_escape_key then Graphics.close_graph ()
+      else if stat.key |> is_digit_char then
+        let updated = time_update (stat.key |> get_time) graph in
+        update_status updated stat
+      else if stat.button then
+        is_in_node stat (graph |> create_graph |> get_person) 100 graph
 end
 
-let events = [Graphics.Key_pressed; Graphics.Button_down; Graphics.Button_up; Graphics.Poll]
+let events =
+  [
+    Graphics.Key_pressed;
+    Graphics.Button_down;
+    Graphics.Button_up;
+    Graphics.Poll;
+  ]
 
 let g = Gui.unpackage_graph "data/basic_network_stepped.json"
 
@@ -171,6 +261,6 @@ let () = Graphics.open_graph " 700x700";;
 Gui.get_person_net ppl edges;
 Gui.write_title ();
 
-let _ = Graphics.loop_at_exit events (Gui.update_status g) in 
+let _ = Graphics.loop_at_exit events (Gui.update_status g) in
 
 ()
