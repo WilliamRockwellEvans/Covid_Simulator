@@ -94,7 +94,10 @@ module Vaccine : DataType with type t = vax = struct
 
   let from_string n = n |> int_of_string |> int_to_vaccine_doses
 
-  let pp = function Two_or_more -> "2" | One -> "1" | Zero -> "0"
+  let pp = function
+    | Two_or_more -> "Completed both vaccine doses"
+    | One -> "One vaccine dose completed"
+    | Zero -> "No vaccine doses taken"
 end
 
 module Status : DataType with type t = status = struct
@@ -110,9 +113,9 @@ module Status : DataType with type t = status = struct
              (Printf.sprintf {|"%s" is not a valid status string|} s))
 
   let pp = function
-    | Infected -> "infected"
-    | Uninfected -> "not infected"
-    | Dead -> "dead"
+    | Infected -> "Infected"
+    | Uninfected -> "Not Infected"
+    | Dead -> "Dead"
 end
 
 module Mask : DataType with type t = mask = struct
@@ -126,7 +129,7 @@ module Mask : DataType with type t = mask = struct
           (Errors.InvalidJSON
              (Printf.sprintf {|"%s" is not a valid mask string|} s))
 
-  let pp = function Masked -> "masked" | Not_masked -> "no mask"
+  let pp = function Masked -> "Masked" | Not_masked -> "Not Masked"
 end
 
 module Sociability : DataType with type t = sociability = struct
@@ -141,7 +144,7 @@ module Sociability : DataType with type t = sociability = struct
           (Errors.InvalidJSON
              (Printf.sprintf {|"%s" is not a valid sociability value|} s))
 
-  let pp = function Low -> "low" | Medium -> "medium" | High -> "high"
+  let pp = function Low -> "Low" | Medium -> "Medium" | High -> "High"
 end
 
 module InteractionTime : DataType with type t = interaction_time =
@@ -159,9 +162,9 @@ struct
                 {|"%s" is not a valid interaction time string|} s))
 
   let pp = function
-    | Short -> "short"
-    | Regular -> "regular"
-    | Long -> "long"
+    | Short -> "Short"
+    | Regular -> "Regular"
+    | Long -> "Long"
 end
 
 module Location : DataType with type t = location = struct
@@ -175,7 +178,7 @@ module Location : DataType with type t = location = struct
           (Errors.InvalidJSON
              (Printf.sprintf {|"%s" is not a valid location string|} s))
 
-  let pp = function Indoors -> "indoors" | Outdoors -> "outdoors"
+  let pp = function Indoors -> "Indoors" | Outdoors -> "Outdoors"
 end
 
 module Density : DataType with type t = density = struct
@@ -191,9 +194,9 @@ module Density : DataType with type t = density = struct
              (Printf.sprintf {|"%s" is not a valid density string|} s))
 
   let pp = function
-    | High_density -> "high"
-    | Med_density -> "med"
-    | Low_density -> "low"
+    | High_density -> "High Density"
+    | Med_density -> "Medium Density"
+    | Low_density -> "Low Density"
 end
 
 module IncubationTime : DataType with type t = incubation_time = struct

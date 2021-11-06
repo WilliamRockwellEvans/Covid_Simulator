@@ -147,33 +147,31 @@ module Gui = struct
   let rec person_id_of_position person_lst x y =
     person_id_of_positionAUX x y 1 person_lst
 
-  let get_infection = function
-    | Typedefs.Infected -> "Infected"
-    | Uninfected -> "Not Infected"
-    | Typedefs.Dead -> "Dead"
+  let get_infection = Status.pp
+  (* function | Typedefs.Infected -> "Infected" | Uninfected -> "Not
+     Infected" | Typedefs.Dead -> "Dead" *)
 
-  let get_sociability = function
-    | Typedefs.Low -> "Low"
-    | Typedefs.High -> "High"
-    | Typedefs.Medium -> "Medium"
+  let get_sociability = Sociability.pp
+  (* function | Typedefs.Low -> "Low" | Typedefs.High -> "High" |
+     Typedefs.Medium -> "Medium" *)
 
-  let get_masked = function
-    | Typedefs.Masked -> "Masked"
-    | Typedefs.Not_masked -> "Not Masked"
+  let get_masked = Mask.pp
+  (* function | Typedefs.Masked -> "Masked" | Typedefs.Not_masked ->
+     "Not Masked" *)
 
-  let get_vaccination = function
-    | Typedefs.Two_or_more -> "Completed both vaccinations"
-    | Typedefs.One -> "One vaccination completed"
-    | Typedefs.Zero -> "No vaccinations taken"
+  let get_vaccination = Vaccine.pp
+  (* function | Typedefs.Two_or_more -> "Completed both vaccinations" |
+     Typedefs.One -> "One vaccination completed" | Typedefs.Zero -> "No
+     vaccinations taken" *)
 
-  let get_location = function
-    | Typedefs.Indoors -> "Indoors"
-    | Typedefs.Outdoors -> "Outdoors"
+  let get_location = Location.pp
 
-  let get_density = function
-    | Typedefs.Low_density -> "Low Density"
-    | Typedefs.Med_density -> "Medium Density"
-    | Typedefs.High_density -> "High Density"
+  (* function | Typedefs.Indoors -> "Indoors" | Typedefs.Outdoors ->
+     "Outdoors" *)
+  let get_density = Density.pp
+  (* function | Typedefs.Low_density -> "Low Density" |
+     Typedefs.Med_density -> "Medium Density" | Typedefs.High_density ->
+     "High Density" *)
 
   let move_down_50 xpos () =
     let _, b = Graphics.current_point () in
