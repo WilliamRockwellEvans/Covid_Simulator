@@ -114,7 +114,7 @@ let net1 = get_net_rep "data/5_person_network.json"
 
 let attr1 =
   {
-    infected = Infected;
+    status = Infected;
     mask = Masked;
     sociability = High;
     vaccine_doses = Zero;
@@ -123,7 +123,7 @@ let attr1 =
 
 let attr2 =
   {
-    infected = Infected;
+    status = Infected;
     sociability = Medium;
     mask = Not_masked;
     vaccine_doses = Two_or_more;
@@ -132,7 +132,7 @@ let attr2 =
 
 let attr5 =
   {
-    infected = Not_infected;
+    status = Uninfected;
     sociability = Medium;
     vaccine_doses = Two_or_more;
     mask = Masked;

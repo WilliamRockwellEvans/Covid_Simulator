@@ -18,7 +18,7 @@ type line = Position.t * Position.t
 (** the type of a line between two points in a grid*)
 
 type graph = {
-  nodes : (Position.t * Infected.t) list;
+  nodes : (Position.t * Status.t) list;
   edges : line list;
 }
 (** The type of a graph for the network*)
@@ -30,7 +30,7 @@ type edge_info = {
 (** The type of edge information.*)
 
 type attr = {
-  infected : Infected.t;
+  status : Status.t;
   sociability : Sociability.t;
   mask : mask;
   position : Position.t;

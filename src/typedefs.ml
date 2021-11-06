@@ -17,7 +17,7 @@ type vax =
 
 type status =
   | Infected
-  | Not_infected
+  | Uninfected
   | Dead
 (* [status] is the type of people's status, ie infection status and
    dead*)
@@ -97,21 +97,21 @@ module Vaccine : DataType with type t = vax = struct
   let pp = function Two_or_more -> "2" | One -> "1" | Zero -> "0"
 end
 
-module Infected : DataType with type t = status = struct
+module Status : DataType with type t = status = struct
   type t = status
 
   let from_string = function
     | s when s = "yes" -> Infected
     | s when s = "dead" -> Dead
-    | s when s = "no" -> Not_infected
+    | s when s = "no" -> Uninfected
     | s ->
         raise
           (Errors.InvalidJSON
-             (Printf.sprintf {|"%s" is not a valid infection string|} s))
+             (Printf.sprintf {|"%s" is not a valid status string|} s))
 
   let pp = function
     | Infected -> "infected"
-    | Not_infected -> "not infected"
+    | Uninfected -> "not infected"
     | Dead -> "dead"
 end
 

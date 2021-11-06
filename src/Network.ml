@@ -12,7 +12,7 @@ exception UnknownEdge of person_id * person_id
 type mortality_rate = float
 
 type graph = {
-  nodes : (Position.t * Infected.t) list;
+  nodes : (Position.t * Status.t) list;
   edges : line list;
 }
 
@@ -22,7 +22,7 @@ type edge_info = {
 }
 
 type attr = {
-  infected : Infected.t;
+  status : Status.t;
   sociability : Sociability.t;
   mask : Mask.t;
   position : Position.t;
@@ -73,8 +73,8 @@ let person_from_json j =
   {
     attributes =
       {
-        infected =
-          j |> member "infected" |> to_string |> Infected.from_string;
+        status =
+          j |> member "infected" |> to_string |> Status.from_string;
         sociability =
           j |> member "sociability" |> to_string
           |> Sociability.from_string;
@@ -173,7 +173,7 @@ let create_graph net =
   let pi netw id =
     ( get_position netw id,
       let attr = get_attributes netw id in
-      attr.infected )
+      attr.status )
   in
   let pi' = pi net in
   let ed netw2 id1 id2 =
@@ -219,8 +219,7 @@ let attr_printer (a : attr) =
   Printf.sprintf
     "Status: %s; mask: %s; sociability: %s; vaccine doses: %s; \
      position: %s;"
-    (Infected.pp a.infected)
-    (Mask.pp a.mask)
+    (Status.pp a.status) (Mask.pp a.mask)
     (Sociability.pp a.sociability)
     (Vaccine.pp a.vaccine_doses)
     (Position.pp a.position)
@@ -241,14 +240,16 @@ let pop_parameters net = net.population
 let virus_info net = net.virus
 
 let size net = List.length net.network
+(* Currently includes both living and dead*)
 
 let fraction_infected net =
   let rec fi_helper = function
     | [] -> 0
     | (_, r) :: t -> begin
-        match r.attributes.infected with
+        match r.attributes.status with
         | Infected -> 1 + fi_helper t
-        | Not_infected -> fi_helper t
+        | Uninfected -> fi_helper t
+        | Dead -> fi_helper t
       end
   in
   float (fi_helper net.network) /. float (size net)
@@ -325,6 +326,7 @@ module PersonKey = struct
 end
 
 module NodeSet = Set.Make (PersonKey)
+module NodeMap = Map.Make (PersonKey)
 
 (* [visitedTracker] implements a logger for tracking which nodes have
    been visited during a graph traversal*)
@@ -347,38 +349,56 @@ class visitedTracker =
    [false] *)
 let rand_bool prob : bool = Random.float 1. < prob
 
-(* [process_node state n] is if node [n] in state [state] gets infected
-   by its neighbors *)
-let process_node state (n : person_id) =
+(* [gets_infected state p] is whether the person with id [p] gets
+   infected by its neighbors in state [n]. Precondition: person [p] is
+   uninfected*)
+let gets_infected state (p : person_id) =
   let rec lst_itr acc = function
-    | h :: t -> lst_itr (transmission_probability state n h :: acc) t
+    | h :: t -> lst_itr (transmission_probability state p h :: acc) t
     | [] -> acc
   in
   lst_itr []
-    (neighbors state n
+    (neighbors state p
     |> List.filter (fun neighbor ->
-           (get_attributes state neighbor).infected = Infected))
+           (get_attributes state neighbor).status = Infected))
   |> List.map rand_bool
   |> List.exists (fun x -> x)
 
-(* [generate_updates state tracker] is a map of people in state who get
-   infected*)
+(* [process_node state n] is the new state of [n] in [state] after the
+   time step has been applied *)
+let process_node state (n : person_id) =
+  match (get_attributes state n).status with
+  | Infected ->
+      if (virus_info state).mortality_rate |> rand_bool then Dead
+      else Infected
+  | Uninfected -> if gets_infected state n then Infected else Uninfected
+  | Dead -> Dead
+
+(* [generate_updates state tracker] is a map of people to their new
+   state*)
 let generate_updates state tracker =
   let rec generate_rec (node : person_id) inf_acc =
     tracker#add_visit node;
     let new_inf_acc =
-      if process_node state node then NodeSet.add node inf_acc
-      else inf_acc
+      NodeMap.add node (process_node state node) inf_acc
     in
     let rec lst_itr = function
       | [] -> new_inf_acc
       | h :: t ->
           if tracker#was_visited h then lst_itr t
-          else NodeSet.union (generate_rec h new_inf_acc) (lst_itr t)
+          else
+            NodeMap.merge
+              (fun h o1 o2 ->
+                match (o1, o2) with
+                | None, None -> None
+                | None, Some v | Some v, None -> Some v
+                | _, _ -> failwith "Invalid arg: maps aren't disjoint")
+              (generate_rec h new_inf_acc)
+              (lst_itr t)
     in
     lst_itr (neighbors state node)
   in
-  generate_rec (head state) NodeSet.empty
+  generate_rec (head state) NodeMap.empty
 
 (* [apply_changes state changes] parses through the graph and applies
    [changes]*)
@@ -388,12 +408,13 @@ let rec apply_changes (state : t) changes =
     | h :: t ->
         let pers = get_person state h in
         let new_person =
-          if NodeSet.mem h changes then
-            {
-              pers with
-              attributes = { pers.attributes with infected = Infected };
-            }
-          else pers
+          match NodeMap.find_opt h changes with
+          | Some s ->
+              {
+                pers with
+                attributes = { pers.attributes with status = s };
+              }
+          | None -> pers
         in
         iterate_people
           (add_person net_acc h new_person.attributes

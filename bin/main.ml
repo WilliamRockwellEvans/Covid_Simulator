@@ -61,7 +61,8 @@ module Gui = struct
 
   let color_of_state = function
     | Infected -> Graphics.red
-    | Not_infected -> Graphics.blue
+    | Uninfected -> Graphics.blue
+    | Dead -> Graphics.black
 
   let rec draw_person_lst r = function
     | [] -> ()
@@ -148,7 +149,8 @@ module Gui = struct
 
   let get_infection = function
     | Typedefs.Infected -> "Infected"
-    | Typedefs.Not_infected -> "Not Infected"
+    | Uninfected -> "Not Infected"
+    | Typedefs.Dead -> "Dead"
 
   let get_sociability = function
     | Typedefs.Low -> "Low"
@@ -251,7 +253,7 @@ module Gui = struct
               (a + String.length "Infection: ")
               (b - 5) 400 15;
             Graphics.set_color Graphics.black;
-            attr.infected |> get_infection |> ( ^ ) "Infection: "
+            attr.status |> get_infection |> ( ^ ) "Infection: "
             |> Graphics.draw_string;
 
             move_down_50 x_pos ();

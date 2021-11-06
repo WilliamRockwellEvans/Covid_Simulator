@@ -20,8 +20,8 @@ type vax =
 
 type status =
   | Infected
+  | Uninfected
   | Dead
-  | Not_infected
 (** [status] is the type of people's status, ie Infected, Not infected, Dead*)
 
 type mask =
@@ -68,7 +68,7 @@ module Position : DataType with type t = int list
 
 module Vaccine : DataType with type t = vax
 
-module Infected : DataType with type t = status
+module Status : DataType with type t = status
 
 module Mask : DataType with type t = mask
 
